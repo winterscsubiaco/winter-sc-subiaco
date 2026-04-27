@@ -1,0 +1,600 @@
+/* =============================================
+   WINTER SC SUBIACO – Diario di Allenamento
+   ============================================= */
+
+:root {
+  --blu:        #0D47A1;
+  --blu-med:    #1565C0;
+  --blu-chiar:  #42A5F5;
+  --blu-sfondo: #E3F2FD;
+  --verde:      #2E7D32;
+  --verde-sf:   #E8F5E9;
+  --arancio:    #E65100;
+  --arancio-sf: #FFF3E0;
+  --viola:      #7B1FA2;
+  --viola-sf:   #F3E5F5;
+  --rosso:      #C62828;
+  --rosso-sf:   #FFEBEE;
+  --grigio-1:   #F5F5F5;
+  --grigio-2:   #EEEEEE;
+  --grigio-3:   #E0E0E0;
+  --grigio-6:   #757575;
+  --bianco:     #FFFFFF;
+  --testo:      #212121;
+  --ombra:      0 4px 20px rgba(0,0,0,0.12);
+  --raggio:     12px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--grigio-1);
+  color: var(--testo);
+  font-size: 14px;
+}
+
+/* ---- LOGIN ---- */
+.pagina-login {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0D47A1 0%, #1565C0 60%, #42A5F5 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.login-box {
+  background: var(--bianco);
+  border-radius: var(--raggio);
+  padding: 40px 36px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.25);
+}
+
+.login-logo {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.login-logo .icona { font-size: 52px; display: block; margin-bottom: 10px; }
+.login-logo h1 { font-size: 20px; font-weight: 800; color: var(--blu); }
+.login-logo p  { font-size: 12px; color: var(--grigio-6); margin-top: 4px; }
+
+/* ---- FORM ELEMENTS ---- */
+.campo { margin-bottom: 18px; }
+.campo label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--grigio-6);
+  margin-bottom: 6px;
+}
+
+.campo input,
+.campo select,
+.campo textarea {
+  width: 100%;
+  padding: 11px 14px;
+  border: 2px solid var(--grigio-3);
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+  background: var(--bianco);
+  transition: border-color 0.2s;
+}
+
+.campo input:focus,
+.campo select:focus,
+.campo textarea:focus {
+  outline: none;
+  border-color: var(--blu-med);
+}
+
+/* ---- BOTTONI ---- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 11px 22px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+
+.btn-pieno { background: var(--blu-med); color: var(--bianco); }
+.btn-pieno:hover { background: var(--blu); }
+.btn-pieno:disabled { opacity: 0.55; cursor: not-allowed; }
+
+.btn-largo { width: 100%; justify-content: center; }
+
+.btn-verde { background: var(--verde); color: var(--bianco); }
+.btn-verde:hover { background: #1B5E20; }
+
+.btn-outline {
+  background: transparent;
+  border: 2px solid var(--blu-med);
+  color: var(--blu-med);
+}
+.btn-outline:hover { background: var(--blu-sfondo); }
+
+.btn-piccolo { padding: 6px 14px; font-size: 12px; }
+
+.btn-logout {
+  background: rgba(255,255,255,0.18);
+  border: none;
+  color: var(--bianco);
+  padding: 7px 14px;
+  border-radius: 7px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.btn-logout:hover { background: rgba(255,255,255,0.28); }
+
+/* ---- MESSAGGI ---- */
+.msg-errore {
+  background: var(--rosso-sf);
+  color: var(--rosso);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13px;
+  margin-bottom: 14px;
+}
+
+.msg-ok {
+  background: var(--verde-sf);
+  color: var(--verde);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13px;
+}
+
+.nascosto { display: none !important; }
+
+/* ---- HEADER APP ---- */
+.intestazione {
+  background: var(--blu);
+  color: var(--bianco);
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.35);
+}
+
+.intestazione-sx h1 { font-size: 15px; font-weight: 800; }
+.intestazione-sx .utente { font-size: 12px; opacity: 0.75; margin-top: 2px; }
+
+/* ---- CONTENUTO ---- */
+.contenuto {
+  padding: 18px;
+  max-width: 1300px;
+  margin: 0 auto;
+}
+
+/* ---- SELETTORE SETTIMANA ---- */
+.selettore-settimana {
+  background: var(--bianco);
+  border-radius: var(--raggio);
+  padding: 18px 20px;
+  margin-bottom: 18px;
+  box-shadow: var(--ombra);
+  display: flex;
+  gap: 14px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.selettore-settimana .campo { margin-bottom: 0; flex: 1; min-width: 130px; }
+
+/* ---- SCHEDA ALLENAMENTO ---- */
+.scheda {
+  background: var(--bianco);
+  border-radius: var(--raggio);
+  box-shadow: var(--ombra);
+  overflow: hidden;
+  margin-bottom: 18px;
+}
+
+.scheda-titolo {
+  background: var(--blu);
+  color: var(--bianco);
+  padding: 13px 20px;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.tabella-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ---- TABELLA ALLENAMENTO ---- */
+.tabella {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11.5px;
+  min-width: 980px;
+}
+
+/* Header colonne */
+.tabella thead th {
+  background: var(--blu);
+  color: var(--bianco);
+  padding: 7px 3px;
+  text-align: center;
+  font-size: 10.5px;
+  font-weight: 700;
+  border: 1px solid rgba(255,255,255,0.15);
+  white-space: nowrap;
+  line-height: 1.3;
+}
+
+.tabella thead th.col-giorno  { width: 42px; min-width: 42px; }
+.tabella thead th.col-sub     { width: 38px; min-width: 38px; }
+.tabella thead th.col-att     { width: 56px; min-width: 48px; }
+.tabella thead th.col-int     { width: 36px; min-width: 32px; background: #37474F; }
+.tabella thead th.col-tot     { width: 50px; min-width: 44px; background: #1B5E20; }
+
+/* Celle generali */
+.tabella td {
+  border: 1px solid var(--grigio-3);
+  padding: 1px 2px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+/* ---- RIGHE GIORNO ---- */
+
+/* Etichetta giorno (L, M, M, G...) */
+.etichetta-giorno {
+  background: var(--blu-med);
+  color: var(--bianco);
+  font-size: 16px;
+  font-weight: 900;
+  text-align: center;
+  padding: 6px 2px;
+  vertical-align: middle;
+}
+
+/* Cella note */
+.cella-note {
+  padding: 4px 6px;
+  background: #FAFAFA;
+}
+
+.note-interne {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.note-interne textarea {
+  flex: 1;
+  border: 1px solid var(--grigio-3);
+  border-radius: 5px;
+  font-size: 11px;
+  font-family: inherit;
+  padding: 5px 7px;
+  resize: none;
+  background: var(--bianco);
+  min-height: 52px;
+}
+
+.note-interne textarea:focus {
+  outline: none;
+  border-color: var(--blu-chiar);
+}
+
+.rpe-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  min-width: 54px;
+}
+
+.rpe-box span {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--viola);
+}
+
+.rpe-box input {
+  width: 52px;
+  padding: 5px 4px;
+  border: 2px solid var(--viola);
+  border-radius: 6px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--viola);
+  background: var(--viola-sf);
+}
+
+.rpe-box input:focus {
+  outline: none;
+  background: var(--bianco);
+}
+
+/* Etichette Km/Ore */
+.etichetta-sub {
+  font-size: 10px;
+  font-weight: 800;
+  vertical-align: middle;
+}
+
+.km-lbl  { background: var(--verde-sf); color: var(--verde); }
+.ore-lbl { background: var(--arancio-sf); color: var(--arancio); }
+
+/* Input nelle celle */
+.tabella input[type="number"] {
+  width: 100%;
+  border: none;
+  text-align: center;
+  font-size: 11.5px;
+  padding: 3px 1px;
+  background: transparent;
+  -moz-appearance: textfield;
+}
+
+.tabella input[type="number"]::-webkit-outer-spin-button,
+.tabella input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+.tabella input[type="number"]:focus {
+  outline: 2px solid var(--blu-chiar);
+  background: var(--blu-sfondo);
+  border-radius: 3px;
+}
+
+/* Celle totali (calcolate auto) */
+.cella-tot {
+  background: var(--verde-sf);
+  color: var(--verde);
+  font-weight: 800;
+  font-size: 11px;
+}
+
+.cella-prog {
+  background: var(--arancio-sf);
+  color: var(--arancio);
+  font-weight: 700;
+  font-size: 11px;
+}
+
+/* Righe TOT Km / TOT Ore in fondo */
+.riga-tot td { background: var(--grigio-2); font-weight: 700; }
+.etichetta-tot {
+  background: var(--blu) !important;
+  color: var(--bianco) !important;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+/* ---- AREA SALVATAGGIO ---- */
+.area-salva {
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  border-top: 1px solid var(--grigio-2);
+  flex-wrap: wrap;
+}
+
+/* ============================================
+   DASHBOARD ALLENATRICE
+   ============================================ */
+
+.stats-griglia {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.stat-card {
+  background: var(--bianco);
+  border-radius: var(--raggio);
+  padding: 20px 16px;
+  text-align: center;
+  box-shadow: var(--ombra);
+}
+
+.stat-card .numero {
+  font-size: 36px;
+  font-weight: 900;
+  color: var(--blu-med);
+  line-height: 1;
+}
+
+.stat-card .etichetta {
+  font-size: 12px;
+  color: var(--grigio-6);
+  margin-top: 6px;
+}
+
+/* Lista atleti */
+.lista-atleti {
+  background: var(--bianco);
+  border-radius: var(--raggio);
+  box-shadow: var(--ombra);
+  overflow: hidden;
+}
+
+.lista-intestazione {
+  background: var(--blu-med);
+  color: var(--bianco);
+  padding: 13px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: 800;
+  font-size: 13px;
+}
+
+.atleta-riga {
+  padding: 13px 20px;
+  border-bottom: 1px solid var(--grigio-2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.atleta-riga:hover { background: var(--blu-sfondo); }
+.atleta-riga:last-child { border-bottom: none; }
+
+.atleta-nome { font-weight: 700; font-size: 14px; }
+.atleta-email { font-size: 12px; color: var(--grigio-6); margin-top: 2px; }
+
+.badge {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.badge-verde { background: var(--verde-sf); color: var(--verde); }
+
+/* Crea atleta form */
+.crea-atleta-form {
+  background: var(--bianco);
+  border-radius: var(--raggio);
+  box-shadow: var(--ombra);
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.crea-atleta-body {
+  padding: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 14px;
+  align-items: flex-end;
+}
+
+.crea-atleta-body .campo { margin-bottom: 0; }
+
+/* ---- MODALE ---- */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  z-index: 200;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.modale {
+  background: var(--bianco);
+  border-radius: var(--raggio);
+  width: 100%;
+  max-width: 1200px;
+  margin: auto;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.4);
+}
+
+.modale-intestazione {
+  background: var(--blu);
+  color: var(--bianco);
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: var(--raggio) var(--raggio) 0 0;
+}
+
+.modale-intestazione h2 { font-size: 15px; font-weight: 800; }
+
+.btn-chiudi {
+  background: rgba(255,255,255,0.2);
+  border: none;
+  color: var(--bianco);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+
+.btn-chiudi:hover { background: rgba(255,255,255,0.35); }
+
+.modale-corpo { padding: 20px; }
+
+/* Tabs settimane */
+.tab-settimane {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.tab-sett {
+  padding: 6px 16px;
+  border-radius: 20px;
+  border: 2px solid var(--blu-med);
+  color: var(--blu-med);
+  background: transparent;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tab-sett.attivo {
+  background: var(--blu-med);
+  color: var(--bianco);
+}
+
+/* Diario sola lettura */
+.info-diario {
+  background: var(--blu-sfondo);
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 14px;
+  font-size: 13px;
+  color: var(--blu);
+  font-weight: 600;
+}
+
+.tabella-readonly input { pointer-events: none; }
+.tabella-readonly textarea { pointer-events: none; resize: none; }
+
+/* Stato vuoto */
+.stato-vuoto {
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--grigio-6);
+  font-size: 14px;
+}
+
+/* ---- RESPONSIVE ---- */
+@media (max-width: 640px) {
+  .contenuto { padding: 12px; }
+  .login-box { padding: 28px 20px; }
+  .selettore-settimana { flex-direction: column; }
+  .selettore-settimana .campo { min-width: unset; }
+  .crea-atleta-body { grid-template-columns: 1fr; }
+}
