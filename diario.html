@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Diario – Winter SC Subiaco</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0D47A1">
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="intestazione">
+    <div class="intestazione-sx">
+      <h1>⛷️ Winter SC Subiaco</h1>
+      <div class="utente">Atleta: <strong id="nomeUtente">...</strong></div>
+    </div>
+    <button class="btn-logout" id="btnEsci">Esci</button>
+  </header>
+
+  <main class="contenuto">
+
+    <!-- SELETTORE SETTIMANA -->
+    <div class="selettore-settimana">
+      <div class="campo">
+        <label>Visualizza / Crea</label>
+        <select id="diarioSelect"></select>
+      </div>
+      <div class="campo">
+        <label>N° Settimana</label>
+        <input type="number" id="settimana_n" min="1" max="60" placeholder="Es. 1">
+      </div>
+      <div class="campo">
+        <label>Dal</label>
+        <input type="date" id="data_dal">
+      </div>
+      <div class="campo">
+        <label>Al</label>
+        <input type="date" id="data_al">
+      </div>
+    </div>
+
+    <!-- TABELLA ALLENAMENTO -->
+    <div class="scheda">
+      <div class="scheda-titolo">DIARIO DI ALLENAMENTO SETTIMANALE</div>
+
+      <div class="tabella-wrapper">
+        <table class="tabella">
+          <thead>
+            <tr>
+              <th class="col-giorno">Giorno</th>
+              <th class="col-sub"></th>
+              <th class="col-att">Forza</th>
+              <th class="col-att">Pattini</th>
+              <th class="col-att">Marcia</th>
+              <th class="col-att">Bici</th>
+              <th class="col-att">Corsa</th>
+              <th class="col-att">Skiroll<br>CL</th>
+              <th class="col-att">Skiroll<br>SK</th>
+              <th class="col-att">Sci<br>CL</th>
+              <th class="col-att">Sci<br>SK</th>
+              <th class="col-int">I1</th>
+              <th class="col-int">I2</th>
+              <th class="col-int">I3</th>
+              <th class="col-int">I4</th>
+              <th class="col-int">I5</th>
+              <th class="col-tot">Tot.<br>Sett.</th>
+              <th class="col-tot">Tot.<br>Prog.</th>
+            </tr>
+          </thead>
+          <tbody id="corpoTabella">
+            <!-- Generato da JS -->
+          </tbody>
+          <tfoot id="pieTabella">
+            <!-- Generato da JS -->
+          </tfoot>
+        </table>
+      </div>
+
+      <!-- AREA SALVA -->
+      <div class="area-salva">
+        <div id="msgSalva" class="nascosto"></div>
+        <button class="btn btn-pieno" id="btnSalva">💾 Salva Diario</button>
+      </div>
+    </div>
+
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/diario.js"></script>
+</body>
+</html>

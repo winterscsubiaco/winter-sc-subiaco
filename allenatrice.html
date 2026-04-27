@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Allenatrice – Winter SC Subiaco</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0D47A1">
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="intestazione">
+    <div class="intestazione-sx">
+      <h1>⛷️ Winter SC Subiaco</h1>
+      <div class="utente">Allenatrice: <strong id="nomeAllenatrice">...</strong></div>
+    </div>
+    <button class="btn-logout" id="btnEsci">Esci</button>
+  </header>
+
+  <main class="contenuto">
+
+    <!-- STATISTICHE -->
+    <div class="stats-griglia">
+      <div class="stat-card">
+        <div class="numero" id="contatoreAtleti">–</div>
+        <div class="etichetta">Atleti registrati</div>
+      </div>
+    </div>
+
+    <!-- CREA ATLETA -->
+    <div class="crea-atleta-form">
+      <div class="scheda-titolo">➕ Aggiungi Nuovo Atleta</div>
+      <form id="formCrea" class="crea-atleta-body">
+        <div class="campo">
+          <label>Nome</label>
+          <input type="text" id="nuovoNome" placeholder="Mario" required>
+        </div>
+        <div class="campo">
+          <label>Cognome</label>
+          <input type="text" id="nuovoCognome" placeholder="Rossi" required>
+        </div>
+        <div class="campo">
+          <label>Email</label>
+          <input type="email" id="nuovaEmail" placeholder="mario.rossi@email.it" required>
+        </div>
+        <div class="campo">
+          <label>Password iniziale</label>
+          <input type="password" id="nuovaPassword" placeholder="Min. 6 caratteri" minlength="6" required>
+        </div>
+        <div>
+          <button type="submit" class="btn btn-verde btn-piccolo" id="btnCrea">➕ Crea Atleta</button>
+        </div>
+      </form>
+      <div style="padding: 0 20px 16px;">
+        <div id="msgCrea" class="nascosto"></div>
+      </div>
+    </div>
+
+    <!-- LISTA ATLETI -->
+    <div class="lista-atleti">
+      <div class="lista-intestazione">
+        <span>Atleti</span>
+        <span style="font-size:12px;opacity:0.8;">Clicca su un atleta per vedere il suo diario</span>
+      </div>
+      <div id="listaAtleti">
+        <div class="stato-vuoto">Caricamento...</div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- MODALE DIARIO ATLETA -->
+  <div class="overlay nascosto" id="overlay">
+    <div class="modale">
+      <div class="modale-intestazione">
+        <h2 id="titoloModale">Diario Atleta</h2>
+        <button class="btn-chiudi" id="btnChiudiModale">✕</button>
+      </div>
+      <div class="modale-corpo">
+        <div class="tab-settimane" id="tabSettimane"></div>
+        <div id="contenutoModale">
+          <div class="stato-vuoto">Seleziona un atleta</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/allenatrice.js"></script>
+</body>
+</html>

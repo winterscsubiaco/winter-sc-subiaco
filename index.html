@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Winter SC Subiaco – Accedi</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0D47A1">
+</head>
+<body class="pagina-login">
+
+  <div class="login-box">
+    <div class="login-logo">
+      <span class="icona">⛷️</span>
+      <h1>Winter SC Subiaco</h1>
+      <p>Diario di Allenamento</p>
+    </div>
+
+    <form id="formLogin">
+      <div id="msgErrore" class="msg-errore nascosto"></div>
+
+      <div class="campo">
+        <label>Email</label>
+        <input type="email" id="email" placeholder="La tua email" autocomplete="email" required>
+      </div>
+
+      <div class="campo">
+        <label>Password</label>
+        <input type="password" id="password" placeholder="La tua password" autocomplete="current-password" required>
+      </div>
+
+      <button type="submit" class="btn btn-pieno btn-largo" id="btnAccedi">
+        Accedi
+      </button>
+    </form>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+  <script>
+    // Redirect se già loggato
+    (async () => {
+      const { data: { session } } = await db.auth.getSession();
+      if (!session) return;
+      const { data: profile } = await db.from('profiles').select('ruolo').eq('id', session.user.id).single();
+      window.location.href = profile?.ruolo === 'allenatrice' ? 'allenatrice.html' : 'diario.html';
+    })();
+
+    document.getElementById('formLogin').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('btnAccedi');
+      const errore = document.getElementById('msgErrore');
+      errore.classList.add('nascosto');
+      btn.textContent = 'Accesso...';
+      btn.disabled = true;
+
+      const email    = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+
+      const { data, error } = await db.auth.signInWithPassword({ email, password });
+
+      if (error) {
+        errore.textContent = 'Email o password non corretti. Riprova.';
+        errore.classList.remove('nascosto');
+        btn.textContent = 'Accedi';
+        btn.disabled = false;
+        return;
+      }
+
+      const { data: profile } = await db.from('profiles').select('ruolo').eq('id', data.user.id).single();
+      window.location.href = profile?.ruolo === 'allenatrice' ? 'allenatrice.html' : 'diario.html';
+    });
+  </script>
+</body>
+</html>
