@@ -239,6 +239,8 @@ async function mostraDiario(diarioId, tabEl) {
 //  CREA NUOVO ATLETA
 // ============================================================
 
+const DOMINIO = '@wintersc.subiaco';
+
 async function creaAtleta(e) {
   e.preventDefault();
   const btn = document.getElementById('btnCrea');
@@ -247,7 +249,8 @@ async function creaAtleta(e) {
 
   const nome     = document.getElementById('nuovoNome').value.trim();
   const cognome  = document.getElementById('nuovoCognome').value.trim();
-  const email    = document.getElementById('nuovaEmail').value.trim();
+  const username = document.getElementById('nuovaEmail').value.trim().toLowerCase();
+  const email    = username + DOMINIO;
   const password = document.getElementById('nuovaPassword').value;
 
   const { data, error } = await db.auth.signUp({
@@ -274,7 +277,7 @@ async function creaAtleta(e) {
     });
   }
 
-  document.getElementById('msgCrea').textContent = `✅ Atleta ${nome} ${cognome} creato! Ha ricevuto un'email di conferma.`;
+  document.getElementById('msgCrea').textContent = `✅ Atleta ${nome} ${cognome} creato! Username: ${username}`;
   document.getElementById('msgCrea').className = 'msg-ok';
   document.getElementById('msgCrea').classList.remove('nascosto');
   document.getElementById('formCrea').reset();
