@@ -21,8 +21,9 @@
       <div id="msgErrore" class="msg-errore nascosto"></div>
 
       <div class="campo">
-        <label>Email</label>
-        <input type="email" id="email" placeholder="La tua email" autocomplete="email" required>
+        <label>Nome utente</label>
+        <input type="text" id="username" placeholder="Es: federica.p" autocomplete="username"
+               autocapitalize="none" autocorrect="off" spellcheck="false" required>
       </div>
 
       <div class="campo">
@@ -39,6 +40,8 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/config.js"></script>
   <script>
+    const DOMINIO = '@wintersc.subiaco';
+
     // Redirect se già loggato
     (async () => {
       const { data: { session } } = await db.auth.getSession();
@@ -55,13 +58,14 @@
       btn.textContent = 'Accesso...';
       btn.disabled = true;
 
-      const email    = document.getElementById('email').value.trim();
+      const username = document.getElementById('username').value.trim().toLowerCase();
       const password = document.getElementById('password').value;
+      const email    = username + DOMINIO;
 
       const { data, error } = await db.auth.signInWithPassword({ email, password });
 
       if (error) {
-        errore.textContent = 'Email o password non corretti. Riprova.';
+        errore.textContent = 'Nome utente o password non corretti. Riprova.';
         errore.classList.remove('nascosto');
         btn.textContent = 'Accedi';
         btn.disabled = false;
