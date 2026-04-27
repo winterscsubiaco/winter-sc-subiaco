@@ -239,7 +239,7 @@ async function mostraDiario(diarioId, tabEl) {
 //  CREA NUOVO ATLETA
 // ============================================================
 
-const DOMINIO = '@wintersc.subiaco';
+const DOMINIO = '@wintersc.it';
 
 async function creaAtleta(e) {
   e.preventDefault();
