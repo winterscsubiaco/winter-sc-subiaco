@@ -236,10 +236,10 @@ async function mostraDiario(diarioId, tabEl) {
 }
 
 // ============================================================
-//  CREA NUOVO ATLETA
+//  CREA NUOVO ATLETA (via Cloudflare Worker)
 // ============================================================
 
-const DOMINIO = '@wintersc.com';
+const WORKER_URL = 'https://crea-atleta.wintersc-subiaco.workers.dev';
 
 async function creaAtleta(e) {
   e.preventDefault();
@@ -250,42 +250,48 @@ async function creaAtleta(e) {
   const nome     = document.getElementById('nuovoNome').value.trim();
   const cognome  = document.getElementById('nuovoCognome').value.trim();
   const username = document.getElementById('nuovaEmail').value.trim().toLowerCase();
-  const email    = username + DOMINIO;
   const password = document.getElementById('nuovaPassword').value;
 
-  const { data, error } = await db.auth.signUp({
-    email,
-    password,
-    options: { data: { nome, cognome, ruolo: 'atleta' } }
-  });
+  const msg = document.getElementById('msgCrea');
 
-  if (error) {
-    document.getElementById('msgCrea').textContent = 'Errore: ' + error.message;
-    document.getElementById('msgCrea').className = 'msg-errore';
-    document.getElementById('msgCrea').classList.remove('nascosto');
-    btn.textContent = '➕ Crea Atleta';
-    btn.disabled = false;
-    return;
-  }
-
-  // Se Supabase ha auto-confirm disabilitato, l'utente esiste ma il profilo
-  // viene creato dal trigger. Se è abilitato, il profilo è già pronto.
-  const userId = data.user?.id;
-  if (userId) {
-    await db.from('profiles').upsert({
-      id: userId, nome, cognome, ruolo: 'atleta'
+  try {
+    const res = await fetch(WORKER_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nome, cognome, username, password }),
     });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      msg.textContent = 'Errore: ' + (data.error || 'sconosciuto');
+      msg.className = 'msg-errore';
+      msg.classList.remove('nascosto');
+      btn.textContent = '➕ Crea Atleta';
+      btn.disabled = false;
+      return;
+    }
+
+    // Aggiorna il profilo con nome e cognome
+    if (data.id) {
+      await db.from('profiles').upsert({ id: data.id, nome, cognome, ruolo: 'atleta' });
+    }
+
+    msg.textContent = `✅ Atleta ${nome} ${cognome} creato! Username: ${username}`;
+    msg.className = 'msg-ok';
+    msg.classList.remove('nascosto');
+    document.getElementById('formCrea').reset();
+    await caricaAtleti();
+    setTimeout(() => msg.classList.add('nascosto'), 6000);
+
+  } catch (err) {
+    msg.textContent = 'Errore di connessione al server.';
+    msg.className = 'msg-errore';
+    msg.classList.remove('nascosto');
   }
 
-  document.getElementById('msgCrea').textContent = `✅ Atleta ${nome} ${cognome} creato! Username: ${username}`;
-  document.getElementById('msgCrea').className = 'msg-ok';
-  document.getElementById('msgCrea').classList.remove('nascosto');
-  document.getElementById('formCrea').reset();
   btn.textContent = '➕ Crea Atleta';
   btn.disabled = false;
-
-  await caricaAtleti();
-  setTimeout(() => document.getElementById('msgCrea').classList.add('nascosto'), 6000);
 }
 
 // ============================================================
