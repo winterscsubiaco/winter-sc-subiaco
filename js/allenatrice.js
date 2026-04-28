@@ -95,12 +95,12 @@ async function apriAtleta(atletaId, nome) {
   const tabs = document.getElementById('tabSettimane');
   tabs.innerHTML = diari.map((d, i) => `
     <button class="tab-sett ${i === 0 ? 'attivo' : ''}"
-            onclick="mostraDiario(${d.id}, this)">
+            onclick="mostraDiario(${d.id}, this, '${atletaId}')">
       Sett. ${d.settimana_n}
     </button>
   `).join('');
 
-  await mostraDiario(diari[0].id, tabs.querySelector('.tab-sett'));
+  await mostraDiario(diari[0].id, tabs.querySelector('.tab-sett'), atletaId);
 }
 
 function chiudiModale() {
@@ -111,7 +111,7 @@ function chiudiModale() {
 //  VISUALIZZA DIARIO (sola lettura)
 // ============================================================
 
-async function mostraDiario(diarioId, tabEl) {
+async function mostraDiario(diarioId, tabEl, atletaId) {
   document.querySelectorAll('.tab-sett').forEach(t => t.classList.remove('attivo'));
   if (tabEl) tabEl.classList.add('attivo');
 
@@ -123,6 +123,42 @@ async function mostraDiario(diarioId, tabEl) {
 
   const mappa = {};
   (allenamenti || []).forEach(a => { mappa[a.giorno] = a; });
+
+  // Totali progressivi stagione (tutte le settimane fino a questa inclusa)
+  let progKm = 0, progOre = 0;
+  if (atletaId) {
+    const { data: dariPrec } = await db
+      .from('diari')
+      .select('id')
+      .eq('atleta_id', atletaId)
+      .lte('settimana_n', diario.settimana_n);
+
+    const ids = (dariPrec || []).map(d => d.id);
+    if (ids.length > 0) {
+      const { data: tuttiAll } = await db
+        .from('allenamenti')
+        .select('*')
+        .in('diario_id', ids);
+
+      (tuttiAll || []).forEach(a => {
+        CAMPI_ALL.forEach(f => {
+          progKm  += parseFloat(a[`${f.chiave}_km`])  || 0;
+          progOre += parseFloat(a[`${f.chiave}_ore`]) || 0;
+        });
+      });
+    }
+  }
+
+  // Totale settimana corrente (per tfoot)
+  let settKm = 0, settOre = 0;
+  GIORNI_ALL.forEach(g => {
+    CAMPI_ALL.forEach(f => {
+      settKm  += parseFloat((mappa[g.chiave] || {})[`${f.chiave}_km`])  || 0;
+      settOre += parseFloat((mappa[g.chiave] || {})[`${f.chiave}_ore`]) || 0;
+    });
+  });
+
+  const fmtProg = (v) => v > 0 ? v.toFixed(1) : '-';
 
   const righe = GIORNI_ALL.map(g => {
     const d = g.chiave;
@@ -163,13 +199,13 @@ async function mostraDiario(diarioId, tabEl) {
         <td class="etichetta-sub km-lbl">Km</td>
         ${celleKm}
         <td class="cella-tot">${totKm > 0 ? totKm.toFixed(1) : '-'}</td>
-        <td class="cella-prog">-</td>
+        <td class="cella-prog">${fmtProg(progKm)}</td>
       </tr>
       <tr>
         <td class="etichetta-sub ore-lbl">Ore</td>
         ${celleOre}
         <td class="cella-tot">${totOre > 0 ? fmtOre(totOre) : '-'}</td>
-        <td class="cella-prog">-</td>
+        <td class="cella-prog">${progOre > 0 ? fmtOre(progOre) : '-'}</td>
       </tr>
     `;
   }).join('');
@@ -220,14 +256,14 @@ async function mostraDiario(diarioId, tabEl) {
           <tr class="riga-tot">
             <td colspan="2" class="etichetta-tot">TOT Km</td>
             ${totKmCols}
-            <td class="cella-tot">-</td>
-            <td class="cella-prog">-</td>
+            <td class="cella-tot">${settKm > 0 ? settKm.toFixed(1) : '-'}</td>
+            <td class="cella-prog">${fmtProg(progKm)}</td>
           </tr>
           <tr class="riga-tot">
             <td colspan="2" class="etichetta-tot">TOT Ore</td>
             ${totOreCols}
-            <td class="cella-tot">-</td>
-            <td class="cella-prog">-</td>
+            <td class="cella-tot">${settOre > 0 ? fmtOre(settOre) : '-'}</td>
+            <td class="cella-prog">${progOre > 0 ? fmtOre(progOre) : '-'}</td>
           </tr>
         </tfoot>
       </table>

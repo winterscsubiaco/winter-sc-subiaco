@@ -54,13 +54,13 @@ function costruisciTabella() {
       <td colspan="2" class="etichetta-tot">TOT Km</td>
       ${celleKm}
       <td class="cella-tot" id="tot_km_settimana">-</td>
-      <td class="cella-prog">-</td>
+      <td class="cella-prog" id="prog_km_totale">-</td>
     </tr>
     <tr class="riga-tot">
       <td colspan="2" class="etichetta-tot">TOT Ore</td>
       ${celleOre}
       <td class="cella-tot" id="tot_ore_settimana">-</td>
-      <td class="cella-prog">-</td>
+      <td class="cella-prog" id="prog_ore_totale">-</td>
     </tr>
   `;
 }
@@ -180,7 +180,45 @@ function pulisciModulo() {
   aggiornaTotali();
 }
 
-async function caricaDiario(diarioId) {
+async function aggiornaProgressivi(settimana_n) {
+  if (!settimana_n || !utenteCorrente) return;
+
+  const { data: diari } = await db
+    .from('diari')
+    .select('id')
+    .eq('atleta_id', utenteCorrente.id)
+    .lte('settimana_n', settimana_n);
+
+  const ids = (diari || []).map(d => d.id);
+  if (!ids.length) return;
+
+  const { data: tuttiAll } = await db
+    .from('allenamenti')
+    .select('*')
+    .in('diario_id', ids);
+
+  let progKm = 0, progOre = 0;
+  (tuttiAll || []).forEach(a => {
+    TUTTI_CAMPI.forEach(f => {
+      progKm  += parseFloat(a[`${f.chiave}_km`])  || 0;
+      progOre += parseFloat(a[`${f.chiave}_ore`]) || 0;
+    });
+  });
+
+  GIORNI.forEach(g => {
+    const elKm  = document.getElementById(`${g.chiave}_prog_km`);
+    const elOre = document.getElementById(`${g.chiave}_prog_ore`);
+    if (elKm)  elKm.textContent  = progKm  > 0 ? progKm.toFixed(1)    : '-';
+    if (elOre) elOre.textContent = progOre > 0 ? formattaOre(progOre) : '-';
+  });
+
+  const elKmTot  = document.getElementById('prog_km_totale');
+  const elOreTot = document.getElementById('prog_ore_totale');
+  if (elKmTot)  elKmTot.textContent  = progKm  > 0 ? progKm.toFixed(1)    : '-';
+  if (elOreTot) elOreTot.textContent = progOre > 0 ? formattaOre(progOre) : '-';
+}
+
+async function caricaDiario(diarioId, settimana_n) {
   if (!diarioId) { pulisciModulo(); return; }
 
   const { data: allenamenti } = await db
@@ -207,6 +245,7 @@ async function caricaDiario(diarioId) {
   });
 
   aggiornaTotali();
+  await aggiornaProgressivi(settimana_n);
 }
 
 // ============================================================
@@ -344,7 +383,7 @@ window.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('data_dal').value    = diario.data_dal    || '';
         document.getElementById('data_al').value     = diario.data_al     || '';
       }
-      await caricaDiario(id);
+      await caricaDiario(id, diario?.settimana_n);
     } else {
       document.getElementById('settimana_n').value = '';
       document.getElementById('data_dal').value    = '';
