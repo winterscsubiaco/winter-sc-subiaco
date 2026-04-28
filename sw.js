@@ -1,5 +1,5 @@
-const CACHE = 'wintersc-v1';
-const RISORSE = ['/', '/index.html', '/diario.html', '/allenatrice.html', '/css/style.css'];
+const CACHE = 'wintersc-v9';
+const RISORSE = ['/', '/index.html', '/diario.html', '/allenatrice.html', '/css/style.css', '/icon-192.png', '/icon-512.png'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(RISORSE)));

@@ -59,9 +59,11 @@ async function caricaAtleti() {
 
   lista.innerHTML = atleti.map(a => {
     const nome = [a.nome, a.cognome].filter(Boolean).join(' ') || 'Nome non impostato';
+    const iniziali = [a.nome?.[0], a.cognome?.[0]].filter(Boolean).join('').toUpperCase() || '?';
     return `
       <div class="atleta-riga" onclick="apriAtleta('${a.id}', '${nome.replace(/'/g, "\\'")}')">
-        <div>
+        <div class="atleta-riga-sx">
+          <div class="atleta-avatar">${iniziali}</div>
           <div class="atleta-nome">${nome}</div>
         </div>
         <span class="badge badge-verde">Attivo</span>
