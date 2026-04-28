@@ -166,16 +166,16 @@ async function mostraDiario(diarioId, tabEl, atletaId) {
     const d = g.chiave;
     const a = mappa[d] || {};
     const note = a.note || '';
-    const rpe  = a.rpe  != null ? a.rpe : '-';
+    const rpe  = a.rpe  != null ? a.rpe : '';
 
     const celleKm  = CAMPI_ALL.map(f => {
       const v = a[`${f.chiave}_km`];
-      return `<td>${v && v > 0 ? v : ''}</td>`;
+      return `<td><input type="number" id="mod_${d}_${f.chiave}_km" min="0" step="0.1" value="${v && v > 0 ? v : ''}" oninput="aggiornaTotaliMod()"></td>`;
     }).join('');
 
     const celleOre = CAMPI_ALL.map(f => {
       const v = a[`${f.chiave}_ore`];
-      return `<td>${v && v > 0 ? fmtOre(v) : ''}</td>`;
+      return `<td><input type="number" id="mod_${d}_${f.chiave}_ore" min="0" step="0.05" value="${v && v > 0 ? v : ''}" oninput="aggiornaTotaliMod()"></td>`;
     }).join('');
 
     let totKm = 0, totOre = 0;
@@ -189,10 +189,10 @@ async function mostraDiario(diarioId, tabEl, atletaId) {
         <td rowspan="3" class="etichetta-giorno" title="${g.nome}">${g.etichetta}</td>
         <td colspan="17" class="cella-note">
           <div class="note-interne">
-            <textarea readonly rows="2">${note}</textarea>
+            <textarea id="mod_${d}_note" rows="2" placeholder="Note...">${note}</textarea>
             <div class="rpe-box">
               <span>RPE:</span>
-              <input type="number" value="${rpe !== '-' ? rpe : ''}" readonly>
+              <input type="number" id="mod_${d}_rpe" min="1" max="10" step="0.5" value="${rpe}">
             </div>
           </div>
         </td>
@@ -200,13 +200,13 @@ async function mostraDiario(diarioId, tabEl, atletaId) {
       <tr>
         <td class="etichetta-sub km-lbl">Km</td>
         ${celleKm}
-        <td class="cella-tot">${totKm > 0 ? totKm.toFixed(1) : '-'}</td>
+        <td class="cella-tot" id="mod_${d}_tot_km">${totKm > 0 ? totKm.toFixed(1) : '-'}</td>
         <td class="cella-prog">${fmtProg(progKm)}</td>
       </tr>
       <tr>
         <td class="etichetta-sub ore-lbl">Ore</td>
         ${celleOre}
-        <td class="cella-tot">${totOre > 0 ? fmtOre(totOre) : '-'}</td>
+        <td class="cella-tot" id="mod_${d}_tot_ore">${totOre > 0 ? fmtOre(totOre) : '-'}</td>
         <td class="cella-prog">${progOre > 0 ? fmtOre(progOre) : '-'}</td>
       </tr>
     `;
@@ -216,13 +216,13 @@ async function mostraDiario(diarioId, tabEl, atletaId) {
   const totKmCols  = CAMPI_ALL.map(f => {
     let s = 0;
     GIORNI_ALL.forEach(g => { s += parseFloat((mappa[g.chiave] || {})[`${f.chiave}_km`]) || 0; });
-    return `<td class="cella-tot">${s > 0 ? s.toFixed(1) : '-'}</td>`;
+    return `<td class="cella-tot" id="mod_tot_km_${f.chiave}">${s > 0 ? s.toFixed(1) : '-'}</td>`;
   }).join('');
 
   const totOreCols = CAMPI_ALL.map(f => {
     let s = 0;
     GIORNI_ALL.forEach(g => { s += parseFloat((mappa[g.chiave] || {})[`${f.chiave}_ore`]) || 0; });
-    return `<td class="cella-tot">${s > 0 ? fmtOre(s) : '-'}</td>`;
+    return `<td class="cella-tot" id="mod_tot_ore_${f.chiave}">${s > 0 ? fmtOre(s) : '-'}</td>`;
   }).join('');
 
   document.getElementById('contenutoModale').innerHTML = `
@@ -230,7 +230,7 @@ async function mostraDiario(diarioId, tabEl, atletaId) {
       Settimana <strong>${diario.settimana_n}</strong> &nbsp;|&nbsp; ${dal} → ${al}
     </div>
     <div class="tabella-wrapper">
-      <table class="tabella tabella-readonly">
+      <table class="tabella">
         <thead>
           <tr>
             <th class="col-giorno">Giorno</th>
@@ -258,19 +258,115 @@ async function mostraDiario(diarioId, tabEl, atletaId) {
           <tr class="riga-tot">
             <td colspan="2" class="etichetta-tot">TOT Km</td>
             ${totKmCols}
-            <td class="cella-tot">${settKm > 0 ? settKm.toFixed(1) : '-'}</td>
+            <td class="cella-tot" id="mod_tot_km_settimana">${settKm > 0 ? settKm.toFixed(1) : '-'}</td>
             <td class="cella-prog">${fmtProg(progKm)}</td>
           </tr>
           <tr class="riga-tot">
             <td colspan="2" class="etichetta-tot">TOT Ore</td>
             ${totOreCols}
-            <td class="cella-tot">${settOre > 0 ? fmtOre(settOre) : '-'}</td>
+            <td class="cella-tot" id="mod_tot_ore_settimana">${settOre > 0 ? fmtOre(settOre) : '-'}</td>
             <td class="cella-prog">${progOre > 0 ? fmtOre(progOre) : '-'}</td>
           </tr>
         </tfoot>
       </table>
     </div>
+    <div class="area-salva">
+      <div id="msgSalvaMod" class="nascosto"></div>
+      <button class="btn btn-pieno" id="btnSalvaMod">💾 Salva Modifiche</button>
+    </div>
   `;
+
+  document.getElementById('btnSalvaMod').onclick = () => salvaDiarioMod(diarioId, atletaId);
+}
+
+// ============================================================
+//  RICALCOLO TOTALI LIVE (modifica)
+// ============================================================
+
+function aggiornaTotaliMod() {
+  let totKmSett = 0, totOreSett = 0;
+
+  GIORNI_ALL.forEach(g => {
+    const d = g.chiave;
+    let kmGiorno = 0, oreGiorno = 0;
+
+    CAMPI_ALL.forEach(f => {
+      kmGiorno  += parseFloat(document.getElementById(`mod_${d}_${f.chiave}_km`)?.value)  || 0;
+      oreGiorno += parseFloat(document.getElementById(`mod_${d}_${f.chiave}_ore`)?.value) || 0;
+    });
+
+    const elKm  = document.getElementById(`mod_${d}_tot_km`);
+    const elOre = document.getElementById(`mod_${d}_tot_ore`);
+    if (elKm)  elKm.textContent  = kmGiorno  > 0 ? kmGiorno.toFixed(1) : '-';
+    if (elOre) elOre.textContent = oreGiorno > 0 ? fmtOre(oreGiorno)   : '-';
+
+    totKmSett  += kmGiorno;
+    totOreSett += oreGiorno;
+  });
+
+  CAMPI_ALL.forEach(f => {
+    let colKm = 0, colOre = 0;
+    GIORNI_ALL.forEach(g => {
+      colKm  += parseFloat(document.getElementById(`mod_${g.chiave}_${f.chiave}_km`)?.value)  || 0;
+      colOre += parseFloat(document.getElementById(`mod_${g.chiave}_${f.chiave}_ore`)?.value) || 0;
+    });
+    const elKm  = document.getElementById(`mod_tot_km_${f.chiave}`);
+    const elOre = document.getElementById(`mod_tot_ore_${f.chiave}`);
+    if (elKm)  elKm.textContent  = colKm  > 0 ? colKm.toFixed(1) : '-';
+    if (elOre) elOre.textContent = colOre > 0 ? fmtOre(colOre)   : '-';
+  });
+
+  const elKmTot  = document.getElementById('mod_tot_km_settimana');
+  const elOreTot = document.getElementById('mod_tot_ore_settimana');
+  if (elKmTot)  elKmTot.textContent  = totKmSett  > 0 ? totKmSett.toFixed(1) : '-';
+  if (elOreTot) elOreTot.textContent = totOreSett > 0 ? fmtOre(totOreSett)   : '-';
+}
+
+// ============================================================
+//  SALVA MODIFICHE DIARIO (allenatrice)
+// ============================================================
+
+async function salvaDiarioMod(diarioId, atletaId) {
+  const btn = document.getElementById('btnSalvaMod');
+  const msg = document.getElementById('msgSalvaMod');
+  btn.textContent = 'Salvataggio...';
+  btn.disabled = true;
+
+  let errore = null;
+
+  for (const giorno of GIORNI_ALL) {
+    const d = giorno.chiave;
+    const note = document.getElementById(`mod_${d}_note`)?.value || '';
+    const rpe  = parseFloat(document.getElementById(`mod_${d}_rpe`)?.value) || null;
+
+    const riga = { diario_id: diarioId, giorno: d, note, rpe };
+
+    CAMPI_ALL.forEach(f => {
+      riga[`${f.chiave}_km`]  = parseFloat(document.getElementById(`mod_${d}_${f.chiave}_km`)?.value)  || 0;
+      riga[`${f.chiave}_ore`] = parseFloat(document.getElementById(`mod_${d}_${f.chiave}_ore`)?.value) || 0;
+    });
+
+    const { error } = await db.from('allenamenti').upsert(riga, { onConflict: 'diario_id,giorno' });
+    if (error) { errore = error; break; }
+  }
+
+  if (errore) {
+    msg.textContent = 'Errore salvataggio: ' + errore.message;
+    msg.className = 'msg-errore';
+  } else {
+    msg.textContent = '✅ Modifiche salvate!';
+    msg.className = 'msg-ok';
+  }
+  msg.classList.remove('nascosto');
+
+  btn.textContent = '💾 Salva Modifiche';
+  btn.disabled = false;
+  setTimeout(() => msg.classList.add('nascosto'), 4000);
+
+  if (!errore) {
+    const tabAttivo = document.querySelector('.tab-sett.attivo');
+    await mostraDiario(diarioId, tabAttivo, atletaId);
+  }
 }
 
 // ============================================================
