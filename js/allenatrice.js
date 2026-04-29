@@ -492,9 +492,10 @@ async function eliminaAvviso(id, imageUrl) {
 
   if (imageUrl) {
     const path = imageUrl.split('/object/public/avvisi/').pop()?.split('?')[0];
+    alert('Path da eliminare: ' + path);
     if (path) {
-      const { error } = await db.storage.from('avvisi').remove([path]);
-      if (error) alert('Avviso eliminato, ma errore file storage: ' + error.message);
+      const { data, error } = await db.storage.from('avvisi').remove([path]);
+      alert('Risultato: ' + JSON.stringify(data) + ' | Errore: ' + (error?.message || 'nessuno'));
     }
   }
 
