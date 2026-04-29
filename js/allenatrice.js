@@ -477,7 +477,7 @@ async function caricaAvvisiInviati() {
       <div class="avviso-inviato">
         <div class="avviso-inviato-info">
           <div class="avviso-inviato-titolo">${a.titolo}</div>
-          <div class="avviso-inviato-meta">${data} · ${dest}${a.image_url ? ' · 🖼️' : ''}</div>
+          <div class="avviso-inviato-meta">${data} · ${dest}${a.image_url ? (a.image_url.toLowerCase().split('?')[0].endsWith('.pdf') ? ' · 📄' : ' · 🖼️') : ''}</div>
         </div>
         <button class="btn-elimina" onclick="eliminaAvviso(${a.id}, ${imgParam})">🗑️ Elimina</button>
       </div>

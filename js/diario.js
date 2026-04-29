@@ -400,7 +400,9 @@ async function caricaAvvisi() {
                 <span class="avviso-data">${data}</span>
               </div>
               ${a.testo ? `<div class="avviso-testo">${a.testo}</div>` : ''}
-              ${a.image_url ? `<img src="${a.image_url}" class="avviso-img" alt="${a.titolo}" loading="lazy">` : ''}
+              ${a.image_url ? (isPdf(a.image_url)
+                ? `<div class="avviso-pdf">📄 <a href="${a.image_url}" target="_blank" onclick="event.stopPropagation()">Apri PDF allegato</a></div>`
+                : `<img src="${a.image_url}" class="avviso-img" alt="${a.titolo}" loading="lazy">`) : ''}
               <div style="text-align:right; margin-top:6px;">
                 <button class="btn-nascondi" onclick="event.stopPropagation(); nascondiAvviso(${a.id})">✕ Nascondi</button>
               </div>
@@ -426,7 +428,10 @@ async function apriAvviso(avvisoId, el, imageUrl) {
       else badge.textContent = rimanenti;
     }
   }
-  if (imageUrl) apriLightbox(imageUrl);
+  if (imageUrl) {
+    if (isPdf(imageUrl)) window.open(imageUrl, '_blank');
+    else apriLightbox(imageUrl);
+  }
 }
 
 async function nascondiAvviso(avvisoId) {
@@ -442,6 +447,10 @@ async function nascondiAvviso(avvisoId) {
     const sezione = document.getElementById('sezioneAvvisi');
     if (sezione) sezione.innerHTML = '';
   }
+}
+
+function isPdf(url) {
+  return url && url.toLowerCase().split('?')[0].endsWith('.pdf');
 }
 
 function apriLightbox(url) {
