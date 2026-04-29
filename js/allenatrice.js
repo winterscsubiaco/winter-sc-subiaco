@@ -49,7 +49,7 @@ let atletiList = [];
 async function caricaAtleti() {
   const { data: atleti } = await db
     .from('profiles')
-    .select('id, nome, cognome')
+    .select('id, nome, cognome, email_contatto')
     .eq('ruolo', 'atleta')
     .order('cognome');
 
@@ -69,13 +69,24 @@ async function caricaAtleti() {
   lista.innerHTML = atleti.map(a => {
     const nome = [a.nome, a.cognome].filter(Boolean).join(' ') || 'Nome non impostato';
     const iniziali = [a.nome?.[0], a.cognome?.[0]].filter(Boolean).join('').toUpperCase() || '?';
+    const emailSafe = (a.email_contatto || '').replace(/'/g, "\\'");
     return `
       <div class="atleta-riga" onclick="apriAtleta('${a.id}', '${nome.replace(/'/g, "\\'")}')">
         <div class="atleta-riga-sx">
           <div class="atleta-avatar">${iniziali}</div>
-          <div class="atleta-nome">${nome}</div>
+          <div>
+            <div class="atleta-nome">${nome}</div>
+            <div class="atleta-email">${a.email_contatto || '<span style="opacity:0.5">Nessuna email</span>'}</div>
+          </div>
         </div>
-        <span class="badge badge-verde">Attivo</span>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <button class="btn-edit-email" onclick="event.stopPropagation(); toggleEditEmail('${a.id}')">✏️</button>
+          <span class="badge badge-verde">Attivo</span>
+        </div>
+      </div>
+      <div class="edit-email-form nascosto" id="edit-email-${a.id}">
+        <input type="email" id="input-email-${a.id}" placeholder="email@esempio.com" value="${emailSafe}">
+        <button class="btn btn-piccolo btn-verde" onclick="salvaEmailAtleta('${a.id}')">Salva</button>
       </div>
     `;
   }).join('');
@@ -376,6 +387,24 @@ async function salvaDiarioMod(diarioId, atletaId) {
   if (!errore) {
     const tabAttivo = document.querySelector('.tab-sett.attivo');
     await mostraDiario(diarioId, tabAttivo, atletaId);
+  }
+}
+
+// ============================================================
+//  MODIFICA EMAIL ATLETA
+// ============================================================
+
+function toggleEditEmail(atletaId) {
+  const form = document.getElementById(`edit-email-${atletaId}`);
+  if (form) form.classList.toggle('nascosto');
+}
+
+async function salvaEmailAtleta(atletaId) {
+  const input = document.getElementById(`input-email-${atletaId}`);
+  const email = input?.value.trim() || null;
+  const { error } = await db.from('profiles').update({ email_contatto: email }).eq('id', atletaId);
+  if (!error) {
+    await caricaAtleti();
   }
 }
 
