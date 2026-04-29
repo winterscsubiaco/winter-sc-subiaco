@@ -1,4 +1,4 @@
-const CACHE = 'wintersc-v10';
+const CACHE = 'wintersc-v11';
 const RISORSE = ['/', '/index.html', '/diario.html', '/allenatrice.html', '/css/style.css', '/icon-192.png', '/icon-512.png'];
 
 self.addEventListener('install', e => {

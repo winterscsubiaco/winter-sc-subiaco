@@ -126,7 +126,8 @@ function aggiornaTotali() {
     const d = g.chiave;
     let kmGiorno = 0, oreGiorno = 0;
 
-    TUTTI_CAMPI.forEach(f => {
+    // Solo le attività contano per il totale (I1-I5 sono zone di intensità, non si sommano)
+    ATTIVITA.forEach(f => {
       kmGiorno  += leggiNum(`${d}_${f.chiave}_km`);
       oreGiorno += leggiNum(`${d}_${f.chiave}_ore`);
     });
@@ -199,7 +200,7 @@ async function aggiornaProgressivi(settimana_n) {
 
   let progKm = 0, progOre = 0;
   (tuttiAll || []).forEach(a => {
-    TUTTI_CAMPI.forEach(f => {
+    ATTIVITA.forEach(f => {
       progKm  += parseFloat(a[`${f.chiave}_km`])  || 0;
       progOre += parseFloat(a[`${f.chiave}_ore`]) || 0;
     });

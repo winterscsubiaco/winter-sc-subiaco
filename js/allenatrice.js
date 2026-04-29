@@ -12,7 +12,7 @@ const GIORNI_ALL = [
   { chiave: 'D',  etichetta: 'D',  nome: 'Domenica'  },
 ];
 
-const CAMPI_ALL = [
+const ATTIVITA_ALL = [
   { chiave: 'forza',      label: 'Forza'      },
   { chiave: 'pattini',    label: 'Pattini'    },
   { chiave: 'marcia',     label: 'Marcia'     },
@@ -22,12 +22,17 @@ const CAMPI_ALL = [
   { chiave: 'skiroll_sk', label: 'Skiroll SK' },
   { chiave: 'sci_cl',     label: 'Sci CL'     },
   { chiave: 'sci_sk',     label: 'Sci SK'     },
+];
+
+const INTENSITA_ALL = [
   { chiave: 'i1', label: 'I1' },
   { chiave: 'i2', label: 'I2' },
   { chiave: 'i3', label: 'I3' },
   { chiave: 'i4', label: 'I4' },
   { chiave: 'i5', label: 'I5' },
 ];
+
+const CAMPI_ALL = [...ATTIVITA_ALL, ...INTENSITA_ALL];
 
 function fmtOre(h) {
   const ore = Math.floor(h);
@@ -143,7 +148,7 @@ async function mostraDiario(diarioId, tabEl, atletaId) {
         .in('diario_id', ids);
 
       (tuttiAll || []).forEach(a => {
-        CAMPI_ALL.forEach(f => {
+        ATTIVITA_ALL.forEach(f => {
           progKm  += parseFloat(a[`${f.chiave}_km`])  || 0;
           progOre += parseFloat(a[`${f.chiave}_ore`]) || 0;
         });
@@ -151,10 +156,10 @@ async function mostraDiario(diarioId, tabEl, atletaId) {
     }
   }
 
-  // Totale settimana corrente (per tfoot)
+  // Totale settimana corrente (per tfoot) — solo attività, niente intensità
   let settKm = 0, settOre = 0;
   GIORNI_ALL.forEach(g => {
-    CAMPI_ALL.forEach(f => {
+    ATTIVITA_ALL.forEach(f => {
       settKm  += parseFloat((mappa[g.chiave] || {})[`${f.chiave}_km`])  || 0;
       settOre += parseFloat((mappa[g.chiave] || {})[`${f.chiave}_ore`]) || 0;
     });
@@ -179,7 +184,7 @@ async function mostraDiario(diarioId, tabEl, atletaId) {
     }).join('');
 
     let totKm = 0, totOre = 0;
-    CAMPI_ALL.forEach(f => {
+    ATTIVITA_ALL.forEach(f => {
       totKm  += parseFloat(a[`${f.chiave}_km`])  || 0;
       totOre += parseFloat(a[`${f.chiave}_ore`]) || 0;
     });
@@ -290,7 +295,8 @@ function aggiornaTotaliMod() {
     const d = g.chiave;
     let kmGiorno = 0, oreGiorno = 0;
 
-    CAMPI_ALL.forEach(f => {
+    // Solo attività nel totale, niente I1-I5
+    ATTIVITA_ALL.forEach(f => {
       kmGiorno  += parseFloat(document.getElementById(`mod_${d}_${f.chiave}_km`)?.value)  || 0;
       oreGiorno += parseFloat(document.getElementById(`mod_${d}_${f.chiave}_ore`)?.value) || 0;
     });
