@@ -805,9 +805,45 @@ body {
 
 /* ---- RESPONSIVE ---- */
 @media (max-width: 640px) {
-  .contenuto { padding: 12px; }
-  .login-box { padding: 32px 22px; }
-  .selettore-settimana { flex-direction: column; }
-  .selettore-settimana .campo { min-width: unset; }
+  .contenuto { padding: 10px; }
+
+  .login-box { padding: 28px 20px; }
+  .login-logo .logo-img { width: 90px; height: 90px; }
+  .login-logo h1 { font-size: 17px; }
+
+  /* Header compatto */
+  .intestazione { padding: 8px 14px; }
+  .logo-header { width: 32px; height: 32px; }
+  .intestazione-sx h1 { font-size: 13px; }
+  .intestazione-sx .utente { font-size: 11px; }
+
+  /* Selettore settimana: griglia 2 colonne */
+  .selettore-settimana {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    padding: 14px;
+    border-left-width: 3px;
+  }
+  .selettore-settimana .campo { min-width: unset; flex: unset; }
+  .selettore-settimana .campo:first-child { grid-column: 1 / -1; }
+
+  /* Avvisi: padding ridotto */
+  .avviso-card { padding: 12px 14px; }
+
+  /* Crea atleta */
   .crea-atleta-body { grid-template-columns: 1fr; }
+
+  /* Cards stats */
+  .stat-card { padding: 18px 14px; }
+  .stat-card .numero { font-size: 36px; }
+
+  /* Scheda titolo */
+  .scheda-titolo { font-size: 11px; padding: 11px 14px; }
+
+  /* Area salva */
+  .area-salva { padding: 12px 14px; }
+
+  /* Form avvisi allenatrice */
+  .avviso-form { padding: 14px; }
 }
