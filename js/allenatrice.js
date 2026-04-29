@@ -426,6 +426,7 @@ async function creaAtleta(e) {
     msg.classList.remove('nascosto');
     document.getElementById('formCrea').reset();
     await caricaAtleti();
+    await caricaAvvisiInviati();
     setTimeout(() => msg.classList.add('nascosto'), 6000);
 
   } catch (err) {
@@ -454,6 +455,47 @@ function popolaCheckboxAtleti() {
       </label>
     `;
   }).join('');
+}
+
+async function caricaAvvisiInviati() {
+  const { data: avvisi } = await db
+    .from('avvisi')
+    .select('*')
+    .order('creato_il', { ascending: false });
+
+  const div = document.getElementById('avvisiInviati');
+  if (!avvisi || avvisi.length === 0) {
+    div.innerHTML = '<div class="stato-vuoto">Nessun avviso inviato ancora.</div>';
+    return;
+  }
+
+  div.innerHTML = avvisi.map(a => {
+    const data = new Date(a.creato_il).toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: '2-digit' });
+    const dest = a.tutti_atleti ? 'Tutti gli atleti' : `${(a.destinatari || []).length} atleti`;
+    const imgParam = a.image_url ? `'${a.image_url}'` : 'null';
+    return `
+      <div class="avviso-inviato">
+        <div class="avviso-inviato-info">
+          <div class="avviso-inviato-titolo">${a.titolo}</div>
+          <div class="avviso-inviato-meta">${data} · ${dest}${a.image_url ? ' · 🖼️' : ''}</div>
+        </div>
+        <button class="btn-elimina" onclick="eliminaAvviso(${a.id}, ${imgParam})">🗑️ Elimina</button>
+      </div>
+    `;
+  }).join('');
+}
+
+async function eliminaAvviso(id, imageUrl) {
+  if (!confirm('Eliminare questo avviso? Non sarà più visibile agli atleti.')) return;
+
+  await db.from('avvisi').delete().eq('id', id);
+
+  if (imageUrl) {
+    const fileName = imageUrl.split('/').pop().split('?')[0];
+    await db.storage.from('avvisi').remove([fileName]);
+  }
+
+  await caricaAvvisiInviati();
 }
 
 async function inviaAvviso(e) {
@@ -516,6 +558,7 @@ async function inviaAvviso(e) {
     document.getElementById('formAvviso').reset();
     document.getElementById('selezioneAtleti').classList.add('nascosto');
     document.getElementById('avvisoTutti').checked = true;
+    await caricaAvvisiInviati();
   }
   msg.classList.remove('nascosto');
   setTimeout(() => msg.classList.add('nascosto'), 5000);
@@ -550,4 +593,5 @@ window.addEventListener('DOMContentLoaded', async () => {
   });
 
   await caricaAtleti();
+  await caricaAvvisiInviati();
 });

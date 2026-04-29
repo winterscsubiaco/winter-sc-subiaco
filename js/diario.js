@@ -371,11 +371,16 @@ async function caricaAvvisi() {
 
   const { data: letture } = await db
     .from('letture_avvisi')
-    .select('avviso_id')
+    .select('avviso_id, nascosto')
     .eq('atleta_id', utenteCorrente.id);
 
-  const idLetti = new Set((letture || []).map(l => l.avviso_id));
-  const nonLetti = avvisi.filter(a => !idLetti.has(a.id)).length;
+  const idNascosti = new Set((letture || []).filter(l => l.nascosto).map(l => l.avviso_id));
+  const idLetti    = new Set((letture || []).map(l => l.avviso_id));
+
+  const visibili = avvisi.filter(a => !idNascosti.has(a.id));
+  if (visibili.length === 0) return;
+
+  const nonLetti = visibili.filter(a => !idLetti.has(a.id)).length;
 
   div.innerHTML = `
     <div class="scheda" style="margin-bottom:18px;">
@@ -384,17 +389,21 @@ async function caricaAvvisi() {
         ${nonLetti > 0 ? `<span class="badge-non-letto">${nonLetti}</span>` : ''}
       </div>
       <div>
-        ${avvisi.map(a => {
+        ${visibili.map(a => {
           const letto = idLetti.has(a.id);
           const data = new Date(a.creato_il).toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit' });
+          const imgParam = a.image_url ? `'${a.image_url}'` : 'null';
           return `
-            <div class="avviso-card ${letto ? '' : 'non-letto'}" id="avviso-${a.id}" onclick="apriAvviso(${a.id}, this)">
+            <div class="avviso-card ${letto ? '' : 'non-letto'}" id="avviso-${a.id}" onclick="apriAvviso(${a.id}, this, ${imgParam})">
               <div class="avviso-header">
                 <span class="avviso-titolo">${a.titolo}</span>
                 <span class="avviso-data">${data}</span>
               </div>
               ${a.testo ? `<div class="avviso-testo">${a.testo}</div>` : ''}
               ${a.image_url ? `<img src="${a.image_url}" class="avviso-img" alt="${a.titolo}" loading="lazy">` : ''}
+              <div style="text-align:right; margin-top:6px;">
+                <button class="btn-nascondi" onclick="event.stopPropagation(); nascondiAvviso(${a.id})">✕ Nascondi</button>
+              </div>
             </div>
           `;
         }).join('')}
@@ -403,21 +412,44 @@ async function caricaAvvisi() {
   `;
 }
 
-async function apriAvviso(avvisoId, el) {
-  if (!el.classList.contains('non-letto')) return;
-  el.classList.remove('non-letto');
+async function apriAvviso(avvisoId, el, imageUrl) {
+  if (el.classList.contains('non-letto')) {
+    el.classList.remove('non-letto');
+    await db.from('letture_avvisi').upsert(
+      { avviso_id: avvisoId, atleta_id: utenteCorrente.id },
+      { onConflict: 'avviso_id,atleta_id' }
+    );
+    const rimanenti = document.querySelectorAll('.avviso-card.non-letto').length;
+    const badge = document.querySelector('.badge-non-letto');
+    if (badge) {
+      if (rimanenti === 0) badge.remove();
+      else badge.textContent = rimanenti;
+    }
+  }
+  if (imageUrl) apriLightbox(imageUrl);
+}
 
+async function nascondiAvviso(avvisoId) {
   await db.from('letture_avvisi').upsert(
-    { avviso_id: avvisoId, atleta_id: utenteCorrente.id },
+    { avviso_id: avvisoId, atleta_id: utenteCorrente.id, nascosto: true },
     { onConflict: 'avviso_id,atleta_id' }
   );
+  const card = document.getElementById(`avviso-${avvisoId}`);
+  if (card) card.remove();
 
-  const rimanenti = document.querySelectorAll('.avviso-card.non-letto').length;
-  const badge = document.querySelector('.badge-non-letto');
-  if (badge) {
-    if (rimanenti === 0) badge.remove();
-    else badge.textContent = rimanenti;
+  const rimanenti = document.querySelectorAll('.avviso-card').length;
+  if (rimanenti === 0) {
+    const sezione = document.getElementById('sezioneAvvisi');
+    if (sezione) sezione.innerHTML = '';
   }
+}
+
+function apriLightbox(url) {
+  const lb = document.createElement('div');
+  lb.className = 'lightbox';
+  lb.innerHTML = `<span class="lightbox-chiudi">✕</span><img src="${url}" alt="">`;
+  lb.onclick = () => lb.remove();
+  document.body.appendChild(lb);
 }
 
 // ============================================================

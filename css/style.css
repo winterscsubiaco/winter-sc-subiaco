@@ -788,6 +788,19 @@ body {
 .avviso-testo  { font-size: 13px; color: var(--grigio-6); margin-top: 4px; }
 .avviso-img    { max-width: 100%; border-radius: 8px; margin-top: 10px; display: block; max-height: 400px; object-fit: contain; }
 
+.btn-nascondi {
+  background: none;
+  border: none;
+  color: var(--grigio-6);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: color 0.15s, background 0.15s;
+}
+.btn-nascondi:hover { color: var(--rosso); background: var(--rosso-sf); }
+
 .badge-non-letto {
   background: var(--rosso);
   color: var(--bianco);
@@ -802,6 +815,65 @@ body {
   justify-content: center;
   margin-left: 8px;
 }
+
+/* ---- LIGHTBOX ---- */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.92);
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  cursor: zoom-out;
+}
+.lightbox img {
+  max-width: 100%;
+  max-height: 90vh;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+}
+.lightbox-chiudi {
+  position: fixed;
+  top: 16px;
+  right: 20px;
+  color: white;
+  font-size: 28px;
+  font-weight: 900;
+  cursor: pointer;
+  line-height: 1;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+}
+
+/* ---- AVVISI INVIATI (allenatrice) ---- */
+.avviso-inviato {
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--grigio-2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.avviso-inviato:last-child { border-bottom: none; }
+.avviso-inviato-info { flex: 1; }
+.avviso-inviato-titolo { font-weight: 700; font-size: 13px; }
+.avviso-inviato-meta { font-size: 11px; color: var(--grigio-6); margin-top: 3px; }
+
+.btn-elimina {
+  background: var(--rosso-sf);
+  color: var(--rosso);
+  border: none;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+.btn-elimina:hover { background: var(--rosso); color: white; }
 
 /* ---- RESPONSIVE ---- */
 @media (max-width: 640px) {
