@@ -32,6 +32,38 @@
       </div>
     </div>
 
+    <!-- INVIA AVVISO -->
+    <div class="scheda" style="margin-bottom: 20px;">
+      <div class="scheda-titolo">📢 Invia Avviso agli Atleti</div>
+      <div class="avviso-form">
+        <form id="formAvviso">
+          <div class="campo">
+            <label>Titolo *</label>
+            <input type="text" id="avvisoTitolo" placeholder="Es: Programma settimana 3" required>
+          </div>
+          <div class="campo">
+            <label>Testo (opzionale)</label>
+            <textarea id="avvisoTesto" rows="3" placeholder="Descrizione, note, istruzioni..."></textarea>
+          </div>
+          <div class="campo">
+            <label>Immagine (opzionale)</label>
+            <input type="file" id="avvisoImmagine" accept="image/*">
+          </div>
+          <div class="campo">
+            <label class="label-checkbox">
+              <input type="checkbox" id="avvisoTutti" checked>
+              Invia a tutti gli atleti
+            </label>
+            <div id="selezioneAtleti" class="selezione-atleti nascosto"></div>
+          </div>
+          <div class="avviso-footer">
+            <button type="submit" class="btn btn-pieno" id="btnInviaAvviso">📤 Invia Avviso</button>
+            <div id="msgAvviso" class="nascosto"></div>
+          </div>
+        </form>
+      </div>
+    </div>
+
     <!-- CREA ATLETA -->
     <div class="crea-atleta-form">
       <div class="scheda-titolo">➕ Aggiungi Nuovo Atleta</div>

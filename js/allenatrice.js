@@ -40,6 +40,8 @@ function fmtOre(h) {
   return `${ore}:${min.toString().padStart(2, '0')}`;
 }
 
+let atletiList = [];
+
 // ============================================================
 //  CARICA ATLETI
 // ============================================================
@@ -60,7 +62,9 @@ async function caricaAtleti() {
     return;
   }
 
+  atletiList = atleti;
   if (contatore) contatore.textContent = atleti.length;
+  popolaCheckboxAtleti();
 
   lista.innerHTML = atleti.map(a => {
     const nome = [a.nome, a.cognome].filter(Boolean).join(' ') || 'Nome non impostato';
@@ -435,6 +439,91 @@ async function creaAtleta(e) {
 }
 
 // ============================================================
+//  AVVISI
+// ============================================================
+
+function popolaCheckboxAtleti() {
+  const container = document.getElementById('selezioneAtleti');
+  if (!container || atletiList.length === 0) return;
+  container.innerHTML = atletiList.map(a => {
+    const nome = [a.nome, a.cognome].filter(Boolean).join(' ') || 'Atleta';
+    return `
+      <label class="label-checkbox-atleta">
+        <input type="checkbox" name="destinatario" value="${a.id}">
+        ${nome}
+      </label>
+    `;
+  }).join('');
+}
+
+async function inviaAvviso(e) {
+  e.preventDefault();
+  const btn = document.getElementById('btnInviaAvviso');
+  const msg = document.getElementById('msgAvviso');
+  btn.textContent = 'Invio...';
+  btn.disabled = true;
+
+  const titolo        = document.getElementById('avvisoTitolo').value.trim();
+  const testo         = document.getElementById('avvisoTesto').value.trim();
+  const file          = document.getElementById('avvisoImmagine').files[0];
+  const tuttiAtleti   = document.getElementById('avvisoTutti').checked;
+
+  let destinatari = [];
+  if (!tuttiAtleti) {
+    destinatari = Array.from(
+      document.querySelectorAll('input[name="destinatario"]:checked')
+    ).map(el => el.value);
+    if (destinatari.length === 0) {
+      msg.textContent = 'Seleziona almeno un atleta.';
+      msg.className = 'msg-errore';
+      msg.classList.remove('nascosto');
+      btn.textContent = '📤 Invia Avviso';
+      btn.disabled = false;
+      return;
+    }
+  }
+
+  let imageUrl = null;
+  if (file) {
+    const fileName = `${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
+    const { error: uploadErr } = await db.storage.from('avvisi').upload(fileName, file);
+    if (uploadErr) {
+      msg.textContent = 'Errore immagine: ' + uploadErr.message;
+      msg.className = 'msg-errore';
+      msg.classList.remove('nascosto');
+      btn.textContent = '📤 Invia Avviso';
+      btn.disabled = false;
+      return;
+    }
+    const { data: { publicUrl } } = db.storage.from('avvisi').getPublicUrl(fileName);
+    imageUrl = publicUrl;
+  }
+
+  const { error } = await db.from('avvisi').insert({
+    titolo,
+    testo:        testo    || null,
+    image_url:    imageUrl,
+    tutti_atleti: tuttiAtleti,
+    destinatari:  tuttiAtleti ? [] : destinatari,
+  });
+
+  if (error) {
+    msg.textContent = 'Errore: ' + error.message;
+    msg.className = 'msg-errore';
+  } else {
+    msg.textContent = '✅ Avviso inviato!';
+    msg.className = 'msg-ok';
+    document.getElementById('formAvviso').reset();
+    document.getElementById('selezioneAtleti').classList.add('nascosto');
+    document.getElementById('avvisoTutti').checked = true;
+  }
+  msg.classList.remove('nascosto');
+  setTimeout(() => msg.classList.add('nascosto'), 5000);
+  btn.textContent = '📤 Invia Avviso';
+  btn.disabled = false;
+}
+
+// ============================================================
 //  INIZIALIZZAZIONE
 // ============================================================
 
@@ -449,7 +538,12 @@ window.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('nomeAllenatrice').textContent = nome;
   document.getElementById('btnEsci').addEventListener('click', logout);
   document.getElementById('formCrea').addEventListener('submit', creaAtleta);
+  document.getElementById('formAvviso').addEventListener('submit', inviaAvviso);
   document.getElementById('btnChiudiModale').addEventListener('click', chiudiModale);
+
+  document.getElementById('avvisoTutti').addEventListener('change', (e) => {
+    document.getElementById('selezioneAtleti').classList.toggle('nascosto', e.target.checked);
+  });
 
   document.getElementById('overlay').addEventListener('click', (e) => {
     if (e.target === document.getElementById('overlay')) chiudiModale();

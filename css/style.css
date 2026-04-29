@@ -702,6 +702,107 @@ body {
   font-weight: 500;
 }
 
+/* ---- AVVISI ---- */
+.avviso-form { padding: 20px; }
+.avviso-form .campo { margin-bottom: 14px; }
+
+.label-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--testo);
+  padding: 4px 0;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.label-checkbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--blu);
+  cursor: pointer;
+}
+
+.selezione-atleti {
+  border: 2px solid var(--grigio-3);
+  border-radius: 10px;
+  padding: 4px 14px;
+  max-height: 200px;
+  overflow-y: auto;
+  margin-top: 8px;
+}
+
+.label-checkbox-atleta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--testo);
+  border-bottom: 1px solid var(--grigio-2);
+  text-transform: none;
+  letter-spacing: 0;
+}
+.label-checkbox-atleta:last-child { border-bottom: none; }
+.label-checkbox-atleta input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--blu);
+}
+
+.avviso-footer {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  padding-top: 4px;
+}
+
+/* Cards avvisi (vista atleta) */
+.avviso-card {
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--grigio-2);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.avviso-card:last-child { border-bottom: none; }
+.avviso-card:hover { background: var(--blu-sfondo); }
+.avviso-card.non-letto {
+  border-left: 4px solid var(--oro);
+  background: var(--oro-sf);
+}
+
+.avviso-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+.avviso-titolo { font-weight: 800; font-size: 14px; }
+.avviso-data   { font-size: 11px; color: var(--grigio-6); white-space: nowrap; flex-shrink: 0; }
+.avviso-testo  { font-size: 13px; color: var(--grigio-6); margin-top: 4px; }
+.avviso-img    { max-width: 100%; border-radius: 8px; margin-top: 10px; display: block; max-height: 400px; object-fit: contain; }
+
+.badge-non-letto {
+  background: var(--rosso);
+  color: var(--bianco);
+  font-size: 11px;
+  font-weight: 800;
+  min-width: 20px;
+  height: 20px;
+  border-radius: 10px;
+  padding: 0 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 8px;
+}
+
 /* ---- RESPONSIVE ---- */
 @media (max-width: 640px) {
   .contenuto { padding: 12px; }

@@ -355,6 +355,72 @@ function mostraMsg(testo, tipo) {
 }
 
 // ============================================================
+//  AVVISI
+// ============================================================
+
+async function caricaAvvisi() {
+  const div = document.getElementById('sezioneAvvisi');
+  if (!div) return;
+
+  const { data: avvisi } = await db
+    .from('avvisi')
+    .select('*')
+    .order('creato_il', { ascending: false });
+
+  if (!avvisi || avvisi.length === 0) return;
+
+  const { data: letture } = await db
+    .from('letture_avvisi')
+    .select('avviso_id')
+    .eq('atleta_id', utenteCorrente.id);
+
+  const idLetti = new Set((letture || []).map(l => l.avviso_id));
+  const nonLetti = avvisi.filter(a => !idLetti.has(a.id)).length;
+
+  div.innerHTML = `
+    <div class="scheda" style="margin-bottom:18px;">
+      <div class="scheda-titolo">
+        📢 Avvisi dall'Allenatrice
+        ${nonLetti > 0 ? `<span class="badge-non-letto">${nonLetti}</span>` : ''}
+      </div>
+      <div>
+        ${avvisi.map(a => {
+          const letto = idLetti.has(a.id);
+          const data = new Date(a.creato_il).toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit' });
+          return `
+            <div class="avviso-card ${letto ? '' : 'non-letto'}" id="avviso-${a.id}" onclick="apriAvviso(${a.id}, this)">
+              <div class="avviso-header">
+                <span class="avviso-titolo">${a.titolo}</span>
+                <span class="avviso-data">${data}</span>
+              </div>
+              ${a.testo ? `<div class="avviso-testo">${a.testo}</div>` : ''}
+              ${a.image_url ? `<img src="${a.image_url}" class="avviso-img" alt="${a.titolo}" loading="lazy">` : ''}
+            </div>
+          `;
+        }).join('')}
+      </div>
+    </div>
+  `;
+}
+
+async function apriAvviso(avvisoId, el) {
+  if (!el.classList.contains('non-letto')) return;
+  el.classList.remove('non-letto');
+
+  await db.from('letture_avvisi').upsert(
+    { avviso_id: avvisoId, atleta_id: utenteCorrente.id },
+    { onConflict: 'avviso_id,atleta_id' }
+  );
+
+  const rimanenti = document.querySelectorAll('.avviso-card.non-letto').length;
+  const badge = document.querySelector('.badge-non-letto');
+  if (badge) {
+    if (rimanenti === 0) badge.remove();
+    else badge.textContent = rimanenti;
+  }
+}
+
+// ============================================================
 //  INIZIALIZZAZIONE
 // ============================================================
 
@@ -371,6 +437,7 @@ window.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('nomeUtente').textContent = nome;
 
   costruisciTabella();
+  await caricaAvvisi();
   await caricaListaDiari();
 
   document.getElementById('diarioSelect').addEventListener('change', async (e) => {
