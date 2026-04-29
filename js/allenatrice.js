@@ -383,7 +383,8 @@ async function salvaDiarioMod(diarioId, atletaId) {
 //  CREA NUOVO ATLETA (via Cloudflare Worker)
 // ============================================================
 
-const WORKER_URL = 'https://crea-atleta.wintersc-subiaco.workers.dev';
+const WORKER_URL        = 'https://crea-atleta.wintersc-subiaco.workers.dev';
+const WORKER_EMAIL_URL  = 'https://invia-email.wintersc-subiaco.workers.dev';
 
 async function creaAtleta(e) {
   e.preventDefault();
@@ -391,10 +392,11 @@ async function creaAtleta(e) {
   btn.textContent = 'Creazione...';
   btn.disabled = true;
 
-  const nome     = document.getElementById('nuovoNome').value.trim();
-  const cognome  = document.getElementById('nuovoCognome').value.trim();
-  const username = document.getElementById('nuovaEmail').value.trim().toLowerCase();
-  const password = document.getElementById('nuovaPassword').value;
+  const nome          = document.getElementById('nuovoNome').value.trim();
+  const cognome       = document.getElementById('nuovoCognome').value.trim();
+  const username      = document.getElementById('nuovaEmail').value.trim().toLowerCase();
+  const password      = document.getElementById('nuovaPassword').value;
+  const emailContatto = document.getElementById('nuovaEmailContatto').value.trim() || null;
 
   const msg = document.getElementById('msgCrea');
 
@@ -418,7 +420,7 @@ async function creaAtleta(e) {
 
     // Aggiorna il profilo con nome e cognome
     if (data.id) {
-      await db.from('profiles').upsert({ id: data.id, nome, cognome, ruolo: 'atleta' });
+      await db.from('profiles').upsert({ id: data.id, nome, cognome, ruolo: 'atleta', email_contatto: emailContatto });
     }
 
     msg.textContent = `✅ Atleta ${nome} ${cognome} creato! Username: ${username}`;
@@ -555,6 +557,19 @@ async function inviaAvviso(e) {
     msg.textContent = 'Errore: ' + error.message;
     msg.className = 'msg-errore';
   } else {
+    // Recupera email destinatari e invia notifica
+    let queryEmail = db.from('profiles').select('email_contatto').eq('ruolo', 'atleta').not('email_contatto', 'is', null);
+    if (!tuttiAtleti && destinatari.length > 0) queryEmail = queryEmail.in('id', destinatari);
+    const { data: profili } = await queryEmail;
+    const emails = (profili || []).map(p => p.email_contatto).filter(Boolean);
+    if (emails.length > 0) {
+      fetch(WORKER_EMAIL_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ titolo, testo, emails }),
+      }).catch(() => {});
+    }
+
     msg.textContent = '✅ Avviso inviato!';
     msg.className = 'msg-ok';
     document.getElementById('formAvviso').reset();
