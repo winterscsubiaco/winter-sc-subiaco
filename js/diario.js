@@ -447,7 +447,14 @@ async function nascondiAvviso(avvisoId) {
 function apriLightbox(url) {
   const lb = document.createElement('div');
   lb.className = 'lightbox';
-  lb.innerHTML = `<span class="lightbox-chiudi">✕</span><img src="${url}" alt="">`;
+  lb.innerHTML = `
+    <span class="lightbox-chiudi">✕</span>
+    <img src="${url}" alt=""
+         onload="this.style.opacity='1'"
+         onerror="this.replaceWith(document.getElementById('lb-errore').content.cloneNode(true))"
+         style="opacity:0; transition:opacity 0.3s; max-width:100%; max-height:90vh; object-fit:contain; border-radius:8px;">
+    <template id="lb-errore"><p style="color:white;text-align:center;padding:20px;">⚠️ Immagine non disponibile.<br><small>Prova a inviare di nuovo l'avviso.</small></p></template>
+  `;
   lb.onclick = () => lb.remove();
   document.body.appendChild(lb);
 }
