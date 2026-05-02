@@ -80,7 +80,8 @@ async function caricaAtleti() {
           </div>
         </div>
         <div style="display:flex;align-items:center;gap:8px;">
-          <button class="btn-edit-email" onclick="event.stopPropagation(); toggleEditEmail('${a.id}')">✏️</button>
+          <button class="btn-edit-email" onclick="event.stopPropagation(); toggleEditEmail('${a.id}')" title="Modifica email">✏️</button>
+          <button class="btn-edit-email" onclick="event.stopPropagation(); eliminaAtleta('${a.id}', '${nome.replace(/'/g, "\\'")}')" title="Elimina atleta" style="color:#c62828;">🗑️</button>
           <span class="badge badge-verde">Attivo</span>
         </div>
       </div>
@@ -397,6 +398,25 @@ async function salvaDiarioMod(diarioId, atletaId) {
 function toggleEditEmail(atletaId) {
   const form = document.getElementById(`edit-email-${atletaId}`);
   if (form) form.classList.toggle('nascosto');
+}
+
+async function eliminaAtleta(atletaId, nome) {
+  if (!confirm(`Eliminare ${nome}?\n\nVerranno cancellati tutti i diari e i dati di allenamento. Questa azione è irreversibile.`)) return;
+
+  const res = await fetch(WORKER_URL, {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ atletaId }),
+  });
+
+  const data = await res.json();
+  if (!res.ok) {
+    alert('Errore eliminazione: ' + (data.error || 'sconosciuto'));
+    return;
+  }
+
+  await caricaAtleti();
+  await caricaAvvisiInviati();
 }
 
 async function salvaEmailAtleta(atletaId) {
