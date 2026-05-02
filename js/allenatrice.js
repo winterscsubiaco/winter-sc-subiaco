@@ -81,6 +81,7 @@ async function caricaAtleti() {
         </div>
         <div style="display:flex;align-items:center;gap:8px;">
           <button class="btn-edit-email" onclick="event.stopPropagation(); toggleEditEmail('${a.id}')" title="Modifica email">✏️</button>
+          <button class="btn-edit-email" onclick="event.stopPropagation(); esportaExcel('${a.id}', '${nome.replace(/'/g, "\\'")}')" title="Esporta Excel">📥</button>
           <button class="btn-edit-email" onclick="event.stopPropagation(); eliminaAtleta('${a.id}', '${nome.replace(/'/g, "\\'")}')" title="Elimina atleta" style="color:#c62828;">🗑️</button>
           <span class="badge badge-verde">Attivo</span>
         </div>
@@ -394,6 +395,87 @@ async function salvaDiarioMod(diarioId, atletaId) {
 // ============================================================
 //  MODIFICA EMAIL ATLETA
 // ============================================================
+
+async function esportaExcel(atletaId, nomeAtleta) {
+  const { data: diari } = await db
+    .from('diari')
+    .select('*')
+    .eq('atleta_id', atletaId)
+    .order('settimana_n');
+
+  if (!diari || diari.length === 0) {
+    alert('Nessun diario da esportare per questo atleta.');
+    return;
+  }
+
+  const wb = XLSX.utils.book_new();
+
+  for (const diario of diari) {
+    const { data: allenamenti } = await db
+      .from('allenamenti')
+      .select('*')
+      .eq('diario_id', diario.id);
+
+    const mappa = {};
+    (allenamenti || []).forEach(a => { mappa[a.giorno] = a; });
+
+    const dal = diario.data_dal ? new Date(diario.data_dal).toLocaleDateString('it-IT') : '';
+
+    // Intestazioni colonne
+    const intestazione = ['Giorno'];
+    CAMPI_ALL.forEach(f => { intestazione.push(`${f.label} Km`, `${f.label} Ore`); });
+    intestazione.push('Tot Km', 'Tot Ore', 'RPE', 'Note');
+
+    const righe = [intestazione];
+
+    let totKmSett = 0, totOreSett = 0;
+
+    GIORNI_ALL.forEach(g => {
+      const a = mappa[g.chiave] || {};
+      const riga = [g.nome];
+
+      CAMPI_ALL.forEach(f => {
+        riga.push(parseFloat(a[`${f.chiave}_km`])  || 0);
+        riga.push(parseFloat(a[`${f.chiave}_ore`]) || 0);
+      });
+
+      let km = 0, ore = 0;
+      ATTIVITA_ALL.forEach(f => {
+        km  += parseFloat(a[`${f.chiave}_km`])  || 0;
+        ore += parseFloat(a[`${f.chiave}_ore`]) || 0;
+      });
+      totKmSett  += km;
+      totOreSett += ore;
+
+      riga.push(km > 0 ? km : 0);
+      riga.push(ore > 0 ? ore : 0);
+      riga.push(a.rpe  || '');
+      riga.push(a.note || '');
+      righe.push(riga);
+    });
+
+    // Riga totali
+    const rigaTot = ['TOTALE'];
+    CAMPI_ALL.forEach(f => {
+      let km = 0, ore = 0;
+      GIORNI_ALL.forEach(g => {
+        km  += parseFloat((mappa[g.chiave] || {})[`${f.chiave}_km`])  || 0;
+        ore += parseFloat((mappa[g.chiave] || {})[`${f.chiave}_ore`]) || 0;
+      });
+      rigaTot.push(km, ore);
+    });
+    rigaTot.push(totKmSett, totOreSett, '', '');
+    righe.push(rigaTot);
+
+    const ws = XLSX.utils.aoa_to_sheet(righe);
+    ws['!cols'] = [{ wch: 12 }, ...intestazione.slice(1).map(() => ({ wch: 8 }))];
+
+    const nomeSheet = `Sett ${diario.settimana_n}${dal ? ` (${dal})` : ''}`.slice(0, 31);
+    XLSX.utils.book_append_sheet(wb, ws, nomeSheet);
+  }
+
+  XLSX.writeFile(wb, `${nomeAtleta.replace(/\s+/g, '_')}_diario.xlsx`);
+}
 
 function toggleEditEmail(atletaId) {
   const form = document.getElementById(`edit-email-${atletaId}`);
