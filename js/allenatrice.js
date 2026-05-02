@@ -397,6 +397,8 @@ async function salvaDiarioMod(diarioId, atletaId) {
 // ============================================================
 
 async function esportaExcel(atletaId, nomeAtleta) {
+  try {
+  if (typeof XLSX === 'undefined') { alert('Libreria Excel non caricata. Ricarica la pagina.'); return; }
   const { data: diari } = await db
     .from('diari')
     .select('*')
@@ -475,6 +477,7 @@ async function esportaExcel(atletaId, nomeAtleta) {
   }
 
   XLSX.writeFile(wb, `${nomeAtleta.replace(/\s+/g, '_')}_diario.xlsx`);
+  } catch(e) { alert('Errore esportazione: ' + e.message); }
 }
 
 function toggleEditEmail(atletaId) {
