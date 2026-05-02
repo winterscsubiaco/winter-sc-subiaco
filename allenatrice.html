@@ -96,11 +96,18 @@
                  autocapitalize="none" autocorrect="off">
         </div>
         <div class="campo">
+          <label>Ruolo</label>
+          <select id="nuovoRuolo">
+            <option value="atleta">Atleta</option>
+            <option value="allenatrice">Allenatrice</option>
+          </select>
+        </div>
+        <div class="campo">
           <label>Password iniziale</label>
           <input type="password" id="nuovaPassword" placeholder="Min. 6 caratteri" minlength="6" required>
         </div>
         <div>
-          <button type="submit" class="btn btn-verde btn-piccolo" id="btnCrea">➕ Crea Atleta</button>
+          <button type="submit" class="btn btn-verde btn-piccolo" id="btnCrea">➕ Crea Account</button>
         </div>
       </form>
       <div style="padding: 0 20px 16px;">

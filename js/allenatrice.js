@@ -533,6 +533,7 @@ async function creaAtleta(e) {
   const username      = document.getElementById('nuovaEmail').value.trim().toLowerCase();
   const password      = document.getElementById('nuovaPassword').value;
   const emailContatto = document.getElementById('nuovaEmailContatto').value.trim() || null;
+  const ruolo         = document.getElementById('nuovoRuolo').value;
 
   const msg = document.getElementById('msgCrea');
 
@@ -540,7 +541,7 @@ async function creaAtleta(e) {
     const res = await fetch(WORKER_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ nome, cognome, username, password }),
+      body: JSON.stringify({ nome, cognome, username, password, ruolo }),
     });
 
     const data = await res.json();
@@ -556,10 +557,11 @@ async function creaAtleta(e) {
 
     // Aggiorna il profilo con nome e cognome
     if (data.id) {
-      await db.from('profiles').upsert({ id: data.id, nome, cognome, ruolo: 'atleta', email_contatto: emailContatto });
+      await db.from('profiles').upsert({ id: data.id, nome, cognome, ruolo, email_contatto: emailContatto });
     }
 
-    msg.textContent = `✅ Atleta ${nome} ${cognome} creato! Username: ${username}`;
+    const tipoAccount = ruolo === 'allenatrice' ? 'Allenatrice' : 'Atleta';
+    msg.textContent = `✅ ${tipoAccount} ${nome} ${cognome} creato! Username: ${username}`;
     msg.className = 'msg-ok';
     msg.classList.remove('nascosto');
     document.getElementById('formCrea').reset();

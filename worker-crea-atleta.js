@@ -81,9 +81,10 @@ export default {
     try { body = await request.json(); }
     catch { return json({ error: 'Richiesta non valida' }, 400); }
 
-    const { nome, cognome, username, password } = body;
+    const { nome, cognome, username, password, ruolo } = body;
     if (!username || !password) return json({ error: 'Username e password obbligatori' }, 400);
 
+    const ruoloValido = ruolo === 'allenatrice' ? 'allenatrice' : 'atleta';
     const email = username.toLowerCase().trim() + DOMINIO;
 
     const res = await fetch(`${SUPABASE_URL}/auth/v1/admin/users`, {
@@ -93,7 +94,7 @@ export default {
         email,
         password,
         email_confirm: true,
-        user_metadata: { nome: nome || '', cognome: cognome || '', ruolo: 'atleta' },
+        user_metadata: { nome: nome || '', cognome: cognome || '', ruolo: ruoloValido },
       }),
     });
 
