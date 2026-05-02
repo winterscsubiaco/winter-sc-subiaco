@@ -472,7 +472,8 @@ async function esportaExcel(atletaId, nomeAtleta) {
     const ws = XLSX.utils.aoa_to_sheet(righe);
     ws['!cols'] = [{ wch: 12 }, ...intestazione.slice(1).map(() => ({ wch: 8 }))];
 
-    const nomeSheet = `Sett ${diario.settimana_n}${dal ? ` (${dal})` : ''}`.slice(0, 31);
+    const dalSafe = dal.replace(/\//g, '-');
+    const nomeSheet = `Sett ${diario.settimana_n}${dalSafe ? ` (${dalSafe})` : ''}`.slice(0, 31);
     XLSX.utils.book_append_sheet(wb, ws, nomeSheet);
   }
 
