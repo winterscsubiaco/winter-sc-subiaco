@@ -399,11 +399,24 @@ async function salvaDiarioMod(diarioId, atletaId) {
 async function esportaExcel(atletaId, nomeAtleta) {
   try {
   if (typeof XLSX === 'undefined') { alert('Libreria Excel non caricata. Ricarica la pagina.'); return; }
+
+  // Converte indice colonna (0-based) in lettera Excel (A, B, ..., AA, AB...)
+  function col(idx) {
+    let s = '', n = idx + 1;
+    while (n > 0) { s = String.fromCharCode(65 + (n - 1) % 26) + s; n = Math.floor((n - 1) / 26); }
+    return s;
+  }
+  function f(formula) { return { t: 'n', f: formula }; }
+
+  // Indici colonne dati (0-based): A=Giorno, poi coppie Km/Ore per ogni campo
+  const actKmCols  = ATTIVITA_ALL.map((_, i) => col(1 + i * 2)); // B,D,F,H,J,L,N,P,R
+  const actOreCols = ATTIVITA_ALL.map((_, i) => col(2 + i * 2)); // C,E,G,I,K,M,O,Q,S
+  const nDatiCols  = CAMPI_ALL.length * 2;                        // 28
+  const totKmCol   = col(1 + nDatiCols);                          // AD
+  const totOreCol  = col(2 + nDatiCols);                          // AE
+
   const { data: diari } = await db
-    .from('diari')
-    .select('*')
-    .eq('atleta_id', atletaId)
-    .order('settimana_n');
+    .from('diari').select('*').eq('atleta_id', atletaId).order('settimana_n');
 
   if (!diari || diari.length === 0) {
     alert('Nessun diario da esportare per questo atleta.');
@@ -414,59 +427,47 @@ async function esportaExcel(atletaId, nomeAtleta) {
 
   for (const diario of diari) {
     const { data: allenamenti } = await db
-      .from('allenamenti')
-      .select('*')
-      .eq('diario_id', diario.id);
+      .from('allenamenti').select('*').eq('diario_id', diario.id);
 
     const mappa = {};
     (allenamenti || []).forEach(a => { mappa[a.giorno] = a; });
 
     const dal = diario.data_dal ? new Date(diario.data_dal).toLocaleDateString('it-IT') : '';
 
-    // Intestazioni colonne
     const intestazione = ['Giorno'];
-    CAMPI_ALL.forEach(f => { intestazione.push(`${f.label} Km`, `${f.label} Ore`); });
+    CAMPI_ALL.forEach(ff => { intestazione.push(`${ff.label} Km`, `${ff.label} Ore`); });
     intestazione.push('Tot Km', 'Tot Ore', 'RPE', 'Note');
 
     const righe = [intestazione];
 
-    let totKmSett = 0, totOreSett = 0;
-
-    GIORNI_ALL.forEach(g => {
-      const a = mappa[g.chiave] || {};
+    // Righe giorni (Excel row 2..8)
+    GIORNI_ALL.forEach((g, gi) => {
+      const a   = mappa[g.chiave] || {};
+      const row = gi + 2; // Excel row number
       const riga = [g.nome];
 
-      CAMPI_ALL.forEach(f => {
-        riga.push(parseFloat(a[`${f.chiave}_km`])  || 0);
-        riga.push(parseFloat(a[`${f.chiave}_ore`]) || 0);
+      CAMPI_ALL.forEach(ff => {
+        riga.push(parseFloat(a[`${ff.chiave}_km`])  || 0);
+        riga.push(parseFloat(a[`${ff.chiave}_ore`]) || 0);
       });
 
-      let km = 0, ore = 0;
-      ATTIVITA_ALL.forEach(f => {
-        km  += parseFloat(a[`${f.chiave}_km`])  || 0;
-        ore += parseFloat(a[`${f.chiave}_ore`]) || 0;
-      });
-      totKmSett  += km;
-      totOreSett += ore;
-
-      riga.push(km > 0 ? km : 0);
-      riga.push(ore > 0 ? ore : 0);
+      // Tot Km = somma solo attività (non I1-I5)
+      riga.push(f(actKmCols.map(c => `${c}${row}`).join('+')));
+      // Tot Ore = somma solo attività
+      riga.push(f(actOreCols.map(c => `${c}${row}`).join('+')));
       riga.push(a.rpe  || '');
       riga.push(a.note || '');
       righe.push(riga);
     });
 
-    // Riga totali
+    // Riga TOTALE (Excel row 9)
     const rigaTot = ['TOTALE'];
-    CAMPI_ALL.forEach(f => {
-      let km = 0, ore = 0;
-      GIORNI_ALL.forEach(g => {
-        km  += parseFloat((mappa[g.chiave] || {})[`${f.chiave}_km`])  || 0;
-        ore += parseFloat((mappa[g.chiave] || {})[`${f.chiave}_ore`]) || 0;
-      });
-      rigaTot.push(km, ore);
-    });
-    rigaTot.push(totKmSett, totOreSett, '', '');
+    for (let i = 1; i <= nDatiCols; i++) {
+      rigaTot.push(f(`SUM(${col(i)}2:${col(i)}8)`));
+    }
+    rigaTot.push(f(`SUM(${totKmCol}2:${totKmCol}8)`));
+    rigaTot.push(f(`SUM(${totOreCol}2:${totOreCol}8)`));
+    rigaTot.push('', '');
     righe.push(rigaTot);
 
     const ws = XLSX.utils.aoa_to_sheet(righe);
