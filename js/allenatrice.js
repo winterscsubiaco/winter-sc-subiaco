@@ -49,7 +49,7 @@ let atletiList = [];
 async function caricaAtleti() {
   const { data: atleti } = await db
     .from('profiles')
-    .select('id, nome, cognome, email_contatto')
+    .select('id, nome, cognome, email_contatto, password_iniziale')
     .eq('ruolo', 'atleta')
     .order('cognome');
 
@@ -70,6 +70,7 @@ async function caricaAtleti() {
     const nome = [a.nome, a.cognome].filter(Boolean).join(' ') || 'Nome non impostato';
     const iniziali = [a.nome?.[0], a.cognome?.[0]].filter(Boolean).join('').toUpperCase() || '?';
     const emailSafe = (a.email_contatto || '').replace(/'/g, "\\'");
+    const pwdSafe   = (a.password_iniziale || '').replace(/'/g, "\\'");
     return `
       <div class="atleta-riga" onclick="apriAtleta('${a.id}', '${nome.replace(/'/g, "\\'")}')">
         <div class="atleta-riga-sx">
@@ -81,10 +82,15 @@ async function caricaAtleti() {
         </div>
         <div style="display:flex;align-items:center;gap:8px;">
           <button class="btn-edit-email" onclick="event.stopPropagation(); toggleEditEmail('${a.id}')" title="Modifica email">✏️</button>
+          <button class="btn-edit-email" onclick="event.stopPropagation(); togglePassword('${a.id}')" title="Mostra password">👁️</button>
           <button class="btn-edit-email" onclick="event.stopPropagation(); esportaExcel('${a.id}', '${nome.replace(/'/g, "\\'")}')" title="Esporta Excel">📥</button>
           <button class="btn-edit-email" onclick="event.stopPropagation(); eliminaAtleta('${a.id}', '${nome.replace(/'/g, "\\'")}')" title="Elimina atleta" style="color:#c62828;">🗑️</button>
           <span class="badge badge-verde">Attivo</span>
         </div>
+      </div>
+      <div class="edit-email-form nascosto" id="pwd-box-${a.id}" style="align-items:center;gap:8px;">
+        <span style="font-size:13px;color:#555;">Password:</span>
+        <strong id="pwd-txt-${a.id}" style="font-family:monospace;letter-spacing:1px;">${pwdSafe || '–'}</strong>
       </div>
       <div class="edit-email-form nascosto" id="edit-email-${a.id}">
         <input type="email" id="input-email-${a.id}" placeholder="email@esempio.com" value="${emailSafe}">
@@ -482,6 +488,11 @@ async function esportaExcel(atletaId, nomeAtleta) {
   } catch(e) { alert('Errore esportazione: ' + e.message); }
 }
 
+function togglePassword(atletaId) {
+  const box = document.getElementById(`pwd-box-${atletaId}`);
+  if (box) box.classList.toggle('nascosto');
+}
+
 function toggleEditEmail(atletaId) {
   const form = document.getElementById(`edit-email-${atletaId}`);
   if (form) form.classList.toggle('nascosto');
@@ -557,7 +568,7 @@ async function creaAtleta(e) {
 
     // Aggiorna il profilo con nome e cognome
     if (data.id) {
-      await db.from('profiles').upsert({ id: data.id, nome, cognome, ruolo, email_contatto: emailContatto });
+      await db.from('profiles').upsert({ id: data.id, nome, cognome, ruolo, email_contatto: emailContatto, password_iniziale: password });
     }
 
     const tipoAccount = ruolo === 'allenatrice' ? 'Allenatrice' : 'Atleta';
