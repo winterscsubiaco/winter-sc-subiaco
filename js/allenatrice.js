@@ -105,6 +105,8 @@ async function caricaAtleti() {
 // ============================================================
 
 async function apriAtleta(atletaId, nome) {
+  atletaCorrenteId = atletaId;
+  switchModaleTab('diario');
   document.getElementById('titoloModale').textContent = nome;
   document.getElementById('overlay').classList.remove('nascosto');
   document.getElementById('contenutoModale').innerHTML = '<div class="stato-vuoto">Caricamento...</div>';
@@ -733,6 +735,220 @@ async function inviaAvviso(e) {
 }
 
 // ============================================================
+//  STATISTICHE GRUPPO
+// ============================================================
+
+const COLORI_ATLETI = ['#0D47A1','#F9A825','#2E7D32','#C62828','#6A1B9A','#00838F','#E65100','#AD1457','#1565C0'];
+const COLORI_ATT    = ['#0D47A1','#1565C0','#1976D2','#1E88E5','#2196F3','#42A5F5','#90CAF9','#BBDEFB','#E3F2FD'];
+const COLORI_INT    = ['#2E7D32','#43A047','#66BB6A','#A5D6A7','#E8F5E9'];
+
+let chartInstances = {};
+
+function distruggiChart(id) {
+  if (chartInstances[id]) { chartInstances[id].destroy(); delete chartInstances[id]; }
+}
+
+function creaChart(id, config) {
+  distruggiChart(id);
+  const ctx = document.getElementById(id)?.getContext('2d');
+  if (!ctx) return;
+  chartInstances[id] = new Chart(ctx, config);
+}
+
+function switchStatTab(tab, btn) {
+  document.querySelectorAll('.stats-tab').forEach(b => b.classList.remove('attivo'));
+  btn.classList.add('attivo');
+  document.querySelectorAll('.stat-tab-content').forEach(el => el.classList.add('nascosto'));
+  document.getElementById(`stat${tab.charAt(0).toUpperCase() + tab.slice(1)}`)?.classList.remove('nascosto');
+}
+
+function switchModaleTab(tab) {
+  const isDiario = tab === 'diario';
+  document.getElementById('panelDiario').classList.toggle('nascosto', !isDiario);
+  document.getElementById('panelStats').classList.toggle('nascosto', isDiario);
+  document.getElementById('btnTabDiario').classList.toggle('attivo', isDiario);
+  document.getElementById('btnTabStats').classList.toggle('attivo', !isDiario);
+  if (!isDiario && atletaCorrenteId) caricaStatAtleta(atletaCorrenteId);
+}
+
+let atletaCorrenteId = null;
+
+async function caricaStatGruppo() {
+  const loading = document.getElementById('statLoading');
+  const panelSett = document.getElementById('statSettimana');
+
+  // Carica tutti i diari e allenamenti
+  const { data: diari } = await db.from('diari').select('id, atleta_id, settimana_n').order('settimana_n');
+  if (!diari || diari.length === 0) { if (loading) loading.textContent = 'Nessun dato disponibile.'; return; }
+
+  const diariIds = diari.map(d => d.id);
+  const { data: allAll } = await db.from('allenamenti').select('*').in('diario_id', diariIds);
+  const { data: profili } = await db.from('profiles').select('id, nome, cognome').eq('ruolo', 'atleta');
+
+  if (loading) loading.classList.add('nascosto');
+  if (panelSett) panelSett.classList.remove('nascosto');
+
+  const nomeAtleta = (id) => {
+    const p = (profili || []).find(p => p.id === id);
+    return p ? `${p.nome || ''} ${p.cognome || ''}`.trim() : id.slice(0, 8);
+  };
+
+  // Raggruppa km/ore per atleta per settimana
+  const perAtleta = {};
+  (profili || []).forEach(p => { perAtleta[p.id] = {}; });
+
+  diari.forEach(d => {
+    if (!perAtleta[d.atleta_id]) perAtleta[d.atleta_id] = {};
+    perAtleta[d.atleta_id][d.settimana_n] = { km: 0, ore: 0, rpes: [] };
+  });
+
+  (allAll || []).forEach(a => {
+    const diario = diari.find(d => d.id === a.diario_id);
+    if (!diario) return;
+    const entry = perAtleta[diario.atleta_id]?.[diario.settimana_n];
+    if (!entry) return;
+    ATTIVITA_ALL.forEach(f => {
+      entry.km  += parseFloat(a[`${f.chiave}_km`])  || 0;
+      entry.ore += parseFloat(a[`${f.chiave}_ore`]) || 0;
+    });
+    if (a.rpe) entry.rpes.push(a.rpe);
+  });
+
+  const atletiIds = Object.keys(perAtleta);
+  const labels    = atletiIds.map(id => nomeAtleta(id));
+
+  // Ultima settimana disponibile per ogni atleta
+  const kmUltima  = atletiIds.map(id => {
+    const setts = Object.values(perAtleta[id]);
+    return setts.length ? setts[setts.length - 1].km : 0;
+  });
+  const oreUltima = atletiIds.map(id => {
+    const setts = Object.values(perAtleta[id]);
+    return setts.length ? setts[setts.length - 1].ore : 0;
+  });
+
+  creaChart('chartKmSettimana', {
+    type: 'bar',
+    data: { labels, datasets: [{ label: 'Km', data: kmUltima, backgroundColor: COLORI_ATLETI }] },
+    options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+  });
+
+  creaChart('chartOreSettimana', {
+    type: 'bar',
+    data: { labels, datasets: [{ label: 'Ore', data: oreUltima, backgroundColor: COLORI_ATLETI }] },
+    options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+  });
+
+  // Stagione: totali
+  const kmTot  = atletiIds.map(id => Object.values(perAtleta[id]).reduce((s, v) => s + v.km,  0));
+  const oreTot = atletiIds.map(id => Object.values(perAtleta[id]).reduce((s, v) => s + v.ore, 0));
+
+  const sorted = labels.map((l, i) => ({ l, km: kmTot[i], ore: oreTot[i] }))
+                       .sort((a, b) => b.km - a.km);
+
+  creaChart('chartKmStagione', {
+    type: 'bar',
+    data: { labels: sorted.map(s => s.l), datasets: [{ label: 'Km totali', data: sorted.map(s => s.km), backgroundColor: COLORI_ATLETI }] },
+    options: { indexAxis: 'y', responsive: true, plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true } } }
+  });
+
+  creaChart('chartOreStagione', {
+    type: 'bar',
+    data: { labels: sorted.map(s => s.l), datasets: [{ label: 'Ore totali', data: sorted.map(s => s.ore), backgroundColor: COLORI_ATLETI }] },
+    options: { indexAxis: 'y', responsive: true, plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true } } }
+  });
+
+  // Andamento: km medi del gruppo per settimana
+  const tutteSettimane = [...new Set(diari.map(d => d.settimana_n))].sort((a, b) => a - b);
+  const kmMedi = tutteSettimane.map(s => {
+    const valori = atletiIds.map(id => perAtleta[id][s]?.km || 0).filter(v => v > 0);
+    return valori.length ? valori.reduce((a, b) => a + b, 0) / valori.length : 0;
+  });
+
+  creaChart('chartAndamento', {
+    type: 'line',
+    data: {
+      labels: tutteSettimane.map(s => `Sett. ${s}`),
+      datasets: [{ label: 'Km medi gruppo', data: kmMedi, borderColor: '#0D47A1', backgroundColor: 'rgba(13,71,161,0.1)', fill: true, tension: 0.3 }]
+    },
+    options: { responsive: true, scales: { y: { beginAtZero: true } } }
+  });
+}
+
+// ============================================================
+//  STATISTICHE SINGOLO ATLETA
+// ============================================================
+
+async function caricaStatAtleta(atletaId) {
+  const { data: diari } = await db.from('diari').select('*').eq('atleta_id', atletaId).order('settimana_n');
+  if (!diari || diari.length === 0) return;
+
+  const { data: allAll } = await db.from('allenamenti').select('*').in('diario_id', diari.map(d => d.id));
+
+  const labelsSettimane = diari.map(d => `S.${d.settimana_n}`);
+  const kmSett  = [], oreSett = [], rpeSett = [];
+  const kmAtt   = new Array(ATTIVITA_ALL.length).fill(0);
+  const oreInt  = new Array(INTENSITA_ALL.length).fill(0);
+
+  diari.forEach(d => {
+    const righe = (allAll || []).filter(a => a.diario_id === d.id);
+    let km = 0, ore = 0, rpes = [];
+    righe.forEach(a => {
+      ATTIVITA_ALL.forEach((f, i) => {
+        const k = parseFloat(a[`${f.chiave}_km`])  || 0;
+        const o = parseFloat(a[`${f.chiave}_ore`]) || 0;
+        km += k; ore += o;
+        kmAtt[i] += k;
+      });
+      INTENSITA_ALL.forEach((f, i) => { oreInt[i] += parseFloat(a[`${f.chiave}_ore`]) || 0; });
+      if (a.rpe) rpes.push(a.rpe);
+    });
+    kmSett.push(km);
+    oreSett.push(ore);
+    rpeSett.push(rpes.length ? rpes.reduce((a, b) => a + b, 0) / rpes.length : null);
+  });
+
+  creaChart('chartAtletaKm', {
+    type: 'bar',
+    data: { labels: labelsSettimane, datasets: [{ label: 'Km', data: kmSett, backgroundColor: '#0D47A1' }] },
+    options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+  });
+
+  creaChart('chartAtletaOre', {
+    type: 'bar',
+    data: { labels: labelsSettimane, datasets: [{ label: 'Ore', data: oreSett, backgroundColor: '#F9A825' }] },
+    options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+  });
+
+  creaChart('chartAtletaAttivita', {
+    type: 'doughnut',
+    data: {
+      labels: ATTIVITA_ALL.map(f => f.label),
+      datasets: [{ data: kmAtt, backgroundColor: COLORI_ATT }]
+    },
+    options: { responsive: true, plugins: { legend: { position: 'right', labels: { font: { size: 11 } } } } }
+  });
+
+  creaChart('chartAtletaIntensita', {
+    type: 'bar',
+    data: {
+      labels: INTENSITA_ALL.map(f => f.label),
+      datasets: [{ label: 'Ore', data: oreInt, backgroundColor: COLORI_INT }]
+    },
+    options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+  });
+
+  creaChart('chartAtletaRpe', {
+    type: 'line',
+    data: {
+      labels: labelsSettimane,
+      datasets: [{ label: 'RPE medio', data: rpeSett, borderColor: '#C62828', backgroundColor: 'rgba(198,40,40,0.1)', fill: true, tension: 0.3, spanGaps: true }]
+    },
+    options: { responsive: true, scales: { y: { min: 0, max: 10 } } }
+  });
+}
+
+// ============================================================
 //  INIZIALIZZAZIONE
 // ============================================================
 
@@ -760,4 +976,5 @@ window.addEventListener('DOMContentLoaded', async () => {
 
   await caricaAtleti();
   await caricaAvvisiInviati();
+  await caricaStatGruppo();
 });

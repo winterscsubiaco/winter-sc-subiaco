@@ -796,6 +796,22 @@ body {
 .avviso-pdf a  { color: var(--blu); font-weight: 600; text-decoration: none; }
 .avviso-pdf a:hover { text-decoration: underline; }
 
+/* ── STATISTICHE ─────────────────────────────────── */
+.stats-tabs       { display: flex; gap: 8px; padding: 12px 16px 0; flex-wrap: wrap; }
+.stats-tab        { padding: 6px 16px; border-radius: 20px; border: 2px solid var(--blu-med); background: transparent; color: var(--blu-med); font-size: 13px; font-weight: 600; cursor: pointer; transition: all .2s; }
+.stats-tab.attivo { background: var(--blu-med); color: #fff; }
+.stat-tab-content { padding: 16px; }
+.charts-grid-2    { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.chart-box        { background: #f8f9ff; border-radius: 10px; padding: 14px; border: 1px solid #e0e6ff; }
+.chart-titolo     { font-size: 13px; font-weight: 700; color: var(--blu-scuro); margin-bottom: 10px; }
+.modale-nav       { display: flex; gap: 8px; padding: 12px 16px 0; border-bottom: 1px solid #e0e6ff; }
+.modale-nav-btn   { padding: 8px 20px; border: none; background: transparent; color: #888; font-size: 14px; font-weight: 600; cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -1px; transition: all .2s; }
+.modale-nav-btn.attivo { color: var(--blu); border-bottom-color: var(--oro); }
+
+@media (max-width: 600px) {
+  .charts-grid-2 { grid-template-columns: 1fr; }
+}
+
 .btn-nascondi {
   background: none;
   border: none;

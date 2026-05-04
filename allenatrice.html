@@ -24,11 +24,56 @@
 
   <main class="contenuto">
 
-    <!-- STATISTICHE -->
+    <!-- CONTATORE ATLETI -->
     <div class="stats-griglia">
       <div class="stat-card">
         <div class="numero" id="contatoreAtleti">–</div>
         <div class="etichetta">Atleti registrati</div>
+      </div>
+    </div>
+
+    <!-- STATISTICHE GENERALI GRUPPO -->
+    <div class="scheda" style="margin-bottom:20px;">
+      <div class="scheda-titolo">📊 Statistiche Gruppo</div>
+      <div class="stats-tabs">
+        <button class="stats-tab attivo" onclick="switchStatTab('settimana', this)">Ultima settimana</button>
+        <button class="stats-tab" onclick="switchStatTab('stagione', this)">Stagione</button>
+        <button class="stats-tab" onclick="switchStatTab('andamento', this)">Andamento</button>
+      </div>
+      <div id="statLoading" class="stato-vuoto" style="padding:20px;">Caricamento statistiche...</div>
+
+      <!-- Tab: Ultima settimana -->
+      <div id="statSettimana" class="stat-tab-content nascosto">
+        <div class="charts-grid-2">
+          <div class="chart-box">
+            <div class="chart-titolo">Km per atleta</div>
+            <canvas id="chartKmSettimana"></canvas>
+          </div>
+          <div class="chart-box">
+            <div class="chart-titolo">Ore per atleta</div>
+            <canvas id="chartOreSettimana"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Stagione -->
+      <div id="statStagione" class="stat-tab-content nascosto">
+        <div class="chart-box" style="margin-bottom:16px;">
+          <div class="chart-titolo">Classifica stagionale – Km totali</div>
+          <canvas id="chartKmStagione"></canvas>
+        </div>
+        <div class="chart-box">
+          <div class="chart-titolo">Classifica stagionale – Ore totali</div>
+          <canvas id="chartOreStagione"></canvas>
+        </div>
+      </div>
+
+      <!-- Tab: Andamento -->
+      <div id="statAndamento" class="stat-tab-content nascosto">
+        <div class="chart-box">
+          <div class="chart-titolo">Km medi del gruppo per settimana</div>
+          <canvas id="chartAndamento"></canvas>
+        </div>
       </div>
     </div>
 
@@ -73,7 +118,7 @@
       <div id="avvisiInviati"><div class="stato-vuoto">Nessun avviso inviato ancora.</div></div>
     </div>
 
-    <!-- CREA ATLETA -->
+    <!-- CREA ACCOUNT -->
     <div class="crea-atleta-form">
       <div class="scheda-titolo">➕ Aggiungi Nuovo Atleta</div>
       <form id="formCrea" class="crea-atleta-body">
@@ -136,9 +181,45 @@
         <button class="btn-chiudi" id="btnChiudiModale">✕</button>
       </div>
       <div class="modale-corpo">
-        <div class="tab-settimane" id="tabSettimane"></div>
-        <div id="contenutoModale">
-          <div class="stato-vuoto">Seleziona un atleta</div>
+        <div class="modale-nav">
+          <button class="modale-nav-btn attivo" id="btnTabDiario" onclick="switchModaleTab('diario')">📋 Diario</button>
+          <button class="modale-nav-btn" id="btnTabStats" onclick="switchModaleTab('stats')">📊 Statistiche</button>
+        </div>
+
+        <!-- Tab Diario -->
+        <div id="panelDiario">
+          <div class="tab-settimane" id="tabSettimane"></div>
+          <div id="contenutoModale">
+            <div class="stato-vuoto">Seleziona un atleta</div>
+          </div>
+        </div>
+
+        <!-- Tab Statistiche atleta -->
+        <div id="panelStats" class="nascosto" style="padding:16px;">
+          <div class="charts-grid-2" style="margin-bottom:16px;">
+            <div class="chart-box">
+              <div class="chart-titolo">Km per settimana</div>
+              <canvas id="chartAtletaKm"></canvas>
+            </div>
+            <div class="chart-box">
+              <div class="chart-titolo">Ore per settimana</div>
+              <canvas id="chartAtletaOre"></canvas>
+            </div>
+          </div>
+          <div class="charts-grid-2" style="margin-bottom:16px;">
+            <div class="chart-box">
+              <div class="chart-titolo">Ripartizione attività (ore)</div>
+              <canvas id="chartAtletaAttivita"></canvas>
+            </div>
+            <div class="chart-box">
+              <div class="chart-titolo">Zone di intensità (ore)</div>
+              <canvas id="chartAtletaIntensita"></canvas>
+            </div>
+          </div>
+          <div class="chart-box">
+            <div class="chart-titolo">RPE medio per settimana</div>
+            <canvas id="chartAtletaRpe"></canvas>
+          </div>
         </div>
       </div>
     </div>
@@ -146,6 +227,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <script src="js/config.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/allenatrice.js"></script>
