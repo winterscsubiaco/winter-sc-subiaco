@@ -1,39 +1,66 @@
 /* =============================================
-   WINTER SC SUBIACO – Diario di Allenamento
+   WINTER SC SUBIACO – Aurora Grid Theme
    ============================================= */
 
+@import url('https://fonts.googleapis.com/css2?family=Russo+One&family=IBM+Plex+Mono:wght@400;500;700&display=swap');
+
 :root {
-  --blu:        #0D47A1;
-  --blu-med:    #1565C0;
-  --blu-scuro:  #0A2E6E;
-  --blu-chiar:  #42A5F5;
-  --blu-sfondo: #E8F0FE;
-  --oro:        #F9A825;
-  --oro-sf:     #FFFDE7;
-  --oro-scuro:  #F57F17;
-  --verde:      #2E7D32;
-  --verde-sf:   #E8F5E9;
-  --arancio:    #E65100;
-  --arancio-sf: #FFF3E0;
-  --viola:      #7B1FA2;
-  --viola-sf:   #F3E5F5;
-  --rosso:      #C62828;
-  --rosso-sf:   #FFEBEE;
-  --grigio-1:   #F4F6F9;
-  --grigio-2:   #EEEEEE;
-  --grigio-3:   #E0E0E0;
-  --grigio-6:   #6B7280;
-  --bianco:     #FFFFFF;
-  --testo:      #1E293B;
-  --ombra:      0 4px 24px rgba(0,0,0,0.10);
-  --raggio:     14px;
+  /* === Aurora Grid Palette === */
+  --void:        #060A14;
+  --deep:        #0B1628;
+  --panel:       #0D1F35;
+  --panel-alt:   #0F2848;
+  --cyan:        #00C8E0;
+  --cyan-dim:    #0090A8;
+  --cyan-soft:   rgba(0,200,224,.10);
+  --cyan-border: rgba(0,200,224,.22);
+  --violet:      #A855F7;
+  --violet-soft: rgba(168,85,247,.12);
+  --ice:         #C8EEF8;
+  --text-sec:    #7A9BB8;
+  --verde:       #00E87A;
+  --verde-sf:    rgba(0,232,122,.14);
+  --rosso:       #FF4060;
+  --rosso-sf:    rgba(255,64,96,.14);
+  --arancio:     #FF9500;
+  --arancio-sf:  rgba(255,149,0,.14);
+
+  /* === Legacy aliases (mantengono compatibilità con HTML esistente) === */
+  --blu:         var(--cyan);
+  --blu-med:     var(--cyan);
+  --blu-scuro:   var(--deep);
+  --blu-chiar:   var(--cyan);
+  --blu-sfondo:  var(--cyan-soft);
+  --oro:         var(--cyan);
+  --oro-sf:      var(--cyan-soft);
+  --oro-scuro:   var(--cyan-dim);
+  --grigio-1:    var(--void);
+  --grigio-2:    rgba(0,200,224,.10);
+  --grigio-3:    var(--cyan-border);
+  --grigio-6:    var(--text-sec);
+  --bianco:      var(--panel);
+  --testo:       var(--ice);
+  --viola:       var(--violet);
+  --viola-sf:    var(--violet-soft);
+  --ombra:       0 4px 32px rgba(0,0,0,0.65), 0 0 0 1px rgba(0,200,224,.10);
+  --raggio:      6px;
+}
+
+@keyframes auroraShift {
+  0%, 100% { opacity: 1;    transform: scale(1)    rotate(0deg);  }
+  33%       { opacity: 1.3; transform: scale(1.06) rotate(2deg);  }
+  66%       { opacity: 0.8; transform: scale(.97)  rotate(-1deg); }
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background: var(--grigio-1);
+  font-family: 'IBM Plex Mono', monospace;
+  background: var(--void);
+  background-image:
+    linear-gradient(rgba(0,200,224,.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,200,224,.04) 1px, transparent 1px);
+  background-size: 40px 40px;
   color: var(--testo);
   font-size: 14px;
 }
@@ -41,22 +68,39 @@ body {
 /* ---- LOGIN ---- */
 .pagina-login {
   min-height: 100vh;
-  background:
-    radial-gradient(ellipse at 30% 0%, rgba(249,168,37,0.18) 0%, transparent 50%),
-    linear-gradient(160deg, #071227 0%, #0A2E6E 50%, #0D47A1 100%);
+  background: var(--void);
+  background-image:
+    radial-gradient(ellipse at 20% 25%, rgba(0,200,224,.18) 0%, transparent 55%),
+    radial-gradient(ellipse at 85% 75%, rgba(168,85,247,.14) 0%, transparent 55%),
+    linear-gradient(rgba(0,200,224,.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,200,224,.04) 1px, transparent 1px);
+  background-size: auto, auto, 40px 40px, 40px 40px;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.pagina-login::before {
+  content: 'WSC';
+  position: absolute; bottom: -40px; right: -20px;
+  font-family: 'Russo One', sans-serif;
+  font-size: 220px; letter-spacing: -6px;
+  color: rgba(0,200,224,.03); pointer-events: none;
+  line-height: 1;
 }
 
 .login-box {
-  background: var(--bianco);
-  border-radius: 20px;
-  padding: 44px 40px;
+  background: var(--panel);
+  border: 1px solid var(--cyan-border);
+  border-radius: 10px;
+  padding: 40px 36px;
   width: 100%;
   max-width: 400px;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.7), 0 0 40px rgba(0,200,224,.08);
+  position: relative; z-index: 1;
 }
 
 .login-logo {
@@ -65,42 +109,43 @@ body {
 }
 
 .login-logo .logo-img {
-  width: 110px;
-  height: 110px;
+  width: 100px;
+  height: 100px;
   border-radius: 50%;
   object-fit: cover;
   object-position: center;
   display: block;
   margin: 0 auto 16px;
-  box-shadow: 0 6px 24px rgba(13,71,161,0.3);
-  border: 3px solid var(--oro);
+  box-shadow: 0 0 30px rgba(0,200,224,.25), 0 6px 20px rgba(0,0,0,0.5);
+  border: 2px solid var(--cyan);
 }
 
 .login-logo h1 {
-  font-size: 19px;
-  font-weight: 900;
-  color: var(--blu-scuro);
-  letter-spacing: -0.3px;
+  font-family: 'Russo One', sans-serif;
+  font-size: 17px;
+  font-weight: 400;
+  color: var(--ice);
+  letter-spacing: 2px;
+  text-transform: uppercase;
 }
 
 .login-logo p {
-  font-size: 11px;
-  color: var(--grigio-6);
-  margin-top: 5px;
-  letter-spacing: 1px;
+  font-size: 10px;
+  color: var(--text-sec);
+  margin-top: 6px;
+  letter-spacing: 3px;
   text-transform: uppercase;
-  font-weight: 600;
 }
 
 /* ---- FORM ELEMENTS ---- */
 .campo { margin-bottom: 18px; }
 .campo label {
   display: block;
-  font-size: 11px;
-  font-weight: 800;
+  font-size: 10px;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.7px;
-  color: var(--grigio-6);
+  letter-spacing: 2px;
+  color: var(--text-sec);
   margin-bottom: 6px;
 }
 
@@ -108,22 +153,30 @@ body {
 .campo select,
 .campo textarea {
   width: 100%;
-  padding: 12px 15px;
-  border: 2px solid var(--grigio-3);
-  border-radius: 10px;
-  font-size: 14px;
-  font-family: inherit;
-  background: var(--bianco);
-  color: var(--testo);
+  padding: 11px 14px;
+  border: 1px solid var(--cyan-border);
+  border-radius: var(--raggio);
+  font-size: 13px;
+  font-family: 'IBM Plex Mono', monospace;
+  background: var(--deep);
+  color: var(--ice);
   transition: border-color 0.2s, box-shadow 0.2s;
 }
+
+.campo input::placeholder,
+.campo textarea::placeholder {
+  color: var(--text-sec);
+  opacity: 0.6;
+}
+
+.campo select option { background: var(--deep); color: var(--ice); }
 
 .campo input:focus,
 .campo select:focus,
 .campo textarea:focus {
   outline: none;
-  border-color: var(--blu-med);
-  box-shadow: 0 0 0 3px rgba(21,101,192,0.12);
+  border-color: var(--cyan);
+  box-shadow: 0 0 0 3px rgba(0,200,224,.12), 0 0 12px rgba(0,200,224,.08);
 }
 
 /* ---- BOTTONI ---- */
@@ -131,67 +184,76 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 12px 24px;
+  padding: 11px 22px;
   border: none;
-  border-radius: 10px;
-  font-size: 14px;
-  font-weight: 800;
+  border-radius: var(--raggio);
+  font-size: 13px;
+  font-weight: 700;
+  font-family: 'IBM Plex Mono', monospace;
   cursor: pointer;
   transition: all 0.18s;
   text-decoration: none;
-  letter-spacing: 0.2px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
 }
 
-.btn-pieno { background: var(--oro); color: #1A1A1A; }
-.btn-pieno:hover { background: var(--oro-scuro); color: var(--bianco); }
-.btn-pieno:disabled { opacity: 0.55; cursor: not-allowed; }
+.btn-pieno { background: var(--cyan); color: var(--void); }
+.btn-pieno:hover { background: #00E8FF; box-shadow: 0 0 16px rgba(0,200,224,.4); }
+.btn-pieno:disabled { opacity: 0.45; cursor: not-allowed; }
 
 .btn-largo { width: 100%; justify-content: center; }
 
-.btn-verde { background: var(--verde); color: var(--bianco); }
-.btn-verde:hover { background: #1B5E20; }
+.btn-verde {
+  background: var(--verde-sf);
+  color: var(--verde);
+  border: 1px solid rgba(0,232,122,.3);
+}
+.btn-verde:hover { background: rgba(0,232,122,.25); box-shadow: 0 0 12px rgba(0,232,122,.2); }
 
 .btn-outline {
   background: transparent;
-  border: 2px solid var(--blu-med);
-  color: var(--blu-med);
+  border: 1px solid var(--cyan-border);
+  color: var(--cyan);
 }
-.btn-outline:hover { background: var(--blu-sfondo); }
+.btn-outline:hover { background: var(--cyan-soft); }
 
-.btn-piccolo { padding: 8px 16px; font-size: 12px; }
+.btn-piccolo { padding: 7px 14px; font-size: 11px; }
 
 .btn-logout {
-  background: rgba(255,255,255,0.12);
-  border: 1px solid rgba(255,255,255,0.28);
-  color: var(--bianco);
+  background: rgba(0,200,224,.08);
+  border: 1px solid var(--cyan-border);
+  color: var(--cyan);
   padding: 7px 16px;
-  border-radius: 8px;
-  font-size: 13px;
+  border-radius: var(--raggio);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
   font-weight: 700;
+  letter-spacing: 1px;
   cursor: pointer;
   transition: all 0.2s;
 }
-.btn-logout:hover { background: rgba(255,255,255,0.24); }
+.btn-logout:hover { background: var(--cyan-soft); box-shadow: 0 0 12px rgba(0,200,224,.15); }
 
 /* ---- MESSAGGI ---- */
 .msg-errore {
   background: var(--rosso-sf);
   color: var(--rosso);
-  border-left: 4px solid var(--rosso);
-  border-radius: 8px;
+  border-left: 3px solid var(--rosso);
+  border-radius: var(--raggio);
   padding: 10px 14px;
-  font-size: 13px;
+  font-size: 12px;
   margin-bottom: 14px;
   font-weight: 600;
+  letter-spacing: .5px;
 }
 
 .msg-ok {
   background: var(--verde-sf);
   color: var(--verde);
-  border-left: 4px solid var(--verde);
-  border-radius: 8px;
+  border-left: 3px solid var(--verde);
+  border-radius: var(--raggio);
   padding: 10px 14px;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
 }
 
@@ -199,7 +261,7 @@ body {
 
 /* ---- HEADER APP ---- */
 .intestazione {
-  background: var(--blu-scuro);
+  background: linear-gradient(180deg, #0D2040 0%, var(--deep) 100%);
   color: var(--bianco);
   padding: 10px 20px;
   display: flex;
@@ -208,8 +270,8 @@ body {
   position: sticky;
   top: 0;
   z-index: 100;
-  box-shadow: 0 2px 16px rgba(0,0,0,0.45);
-  border-bottom: 3px solid var(--oro);
+  border-bottom: 1px solid var(--cyan-border);
+  box-shadow: 0 0 0 1px rgba(0,200,224,.06), 0 4px 32px rgba(0,0,0,0.8);
 }
 
 .intestazione-sx {
@@ -225,11 +287,25 @@ body {
   object-fit: cover;
   object-position: center;
   flex-shrink: 0;
-  border: 2px solid var(--oro);
+  border: 1.5px solid var(--cyan);
+  box-shadow: 0 0 10px rgba(0,200,224,.25);
 }
 
-.intestazione-sx h1 { font-size: 15px; font-weight: 900; letter-spacing: -0.2px; }
-.intestazione-sx .utente { font-size: 12px; opacity: 0.75; margin-top: 2px; }
+.intestazione-sx h1 {
+  font-family: 'Russo One', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--ice);
+}
+.intestazione-sx .utente {
+  font-size: 10px;
+  color: var(--text-sec);
+  margin-top: 2px;
+  letter-spacing: 1px;
+}
+.intestazione-sx .utente strong { color: var(--cyan); }
 
 /* ---- CONTENUTO ---- */
 .contenuto {
@@ -240,49 +316,61 @@ body {
 
 /* ---- SELETTORE SETTIMANA ---- */
 .selettore-settimana {
-  background: var(--bianco);
+  background: var(--panel);
   border-radius: var(--raggio);
-  padding: 18px 20px;
+  padding: 16px 20px;
   margin-bottom: 18px;
   box-shadow: var(--ombra);
   display: flex;
   gap: 14px;
   align-items: flex-end;
   flex-wrap: wrap;
-  border-left: 4px solid var(--oro);
+  border-left: 2px solid var(--cyan);
+  position: relative;
+}
+
+.selettore-settimana::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, var(--cyan), transparent);
+  opacity: .4;
 }
 
 .selettore-settimana .campo { margin-bottom: 0; flex: 1; min-width: 130px; }
 
-/* ---- SCHEDA ALLENAMENTO ---- */
+/* ---- SCHEDA ---- */
 .scheda {
-  background: var(--bianco);
+  background: var(--panel);
   border-radius: var(--raggio);
   box-shadow: var(--ombra);
   overflow: hidden;
   margin-bottom: 18px;
+  border: 1px solid var(--cyan-border);
+  border-top: none;
 }
 
 .scheda-titolo {
-  background: var(--blu-scuro);
-  color: var(--bianco);
-  padding: 13px 20px;
-  font-size: 12px;
-  font-weight: 900;
-  letter-spacing: 1px;
+  background: linear-gradient(180deg, #0F2848 0%, var(--deep) 100%);
+  color: var(--ice);
+  padding: 11px 20px;
+  font-family: 'Russo One', sans-serif;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 3px;
   text-transform: uppercase;
   display: flex;
   align-items: center;
   gap: 10px;
+  border-bottom: 1px solid var(--cyan-border);
 }
 
 .scheda-titolo::before {
   content: '';
   display: inline-block;
-  width: 4px;
-  height: 16px;
-  background: var(--oro);
-  border-radius: 2px;
+  width: 3px;
+  height: 14px;
+  background: var(--cyan);
+  box-shadow: 0 0 8px rgba(0,200,224,.5);
   flex-shrink: 0;
 }
 
@@ -297,16 +385,18 @@ body {
   border-collapse: collapse;
   font-size: 11.5px;
   min-width: 980px;
+  font-family: 'IBM Plex Mono', monospace;
 }
 
 .tabella thead th {
-  background: var(--blu-scuro);
-  color: var(--bianco);
+  background: var(--deep);
+  color: var(--ice);
   padding: 8px 3px;
   text-align: center;
-  font-size: 10.5px;
-  font-weight: 800;
-  border: 1px solid rgba(255,255,255,0.12);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  border: 1px solid rgba(0,200,224,.12);
   white-space: nowrap;
   line-height: 1.3;
 }
@@ -314,11 +404,11 @@ body {
 .tabella thead th.col-giorno  { width: 42px; min-width: 42px; }
 .tabella thead th.col-sub     { width: 38px; min-width: 38px; }
 .tabella thead th.col-att     { width: 56px; min-width: 48px; }
-.tabella thead th.col-int     { width: 36px; min-width: 32px; background: #1C2B3A; }
-.tabella thead th.col-tot     { width: 50px; min-width: 44px; background: var(--oro-scuro); color: #fff; }
+.tabella thead th.col-int     { width: 36px; min-width: 32px; background: rgba(168,85,247,.15); color: var(--violet); }
+.tabella thead th.col-tot     { width: 50px; min-width: 44px; background: rgba(0,200,224,.18); color: var(--cyan); }
 
 .tabella td {
-  border: 1px solid var(--grigio-3);
+  border: 1px solid rgba(0,200,224,.08);
   padding: 1px 2px;
   text-align: center;
   vertical-align: middle;
@@ -326,10 +416,10 @@ body {
 
 /* ---- RIGHE GIORNO ---- */
 .etichetta-giorno {
-  background: var(--blu-scuro);
-  color: var(--bianco);
-  font-size: 16px;
-  font-weight: 900;
+  background: var(--deep);
+  color: var(--cyan);
+  font-size: 14px;
+  font-weight: 700;
   text-align: center;
   padding: 6px 2px;
   vertical-align: middle;
@@ -337,7 +427,7 @@ body {
 
 .cella-note {
   padding: 4px 6px;
-  background: #FAFBFF;
+  background: rgba(0,200,224,.02);
 }
 
 .note-interne {
@@ -348,21 +438,21 @@ body {
 
 .note-interne textarea {
   flex: 1;
-  border: 1px solid var(--grigio-3);
-  border-radius: 6px;
+  border: 1px solid rgba(0,200,224,.15);
+  border-radius: 4px;
   font-size: 11px;
-  font-family: inherit;
+  font-family: 'IBM Plex Mono', monospace;
   padding: 5px 7px;
   resize: none;
-  background: var(--bianco);
+  background: rgba(0,0,0,.3);
   min-height: 52px;
-  color: var(--testo);
+  color: var(--ice);
 }
 
 .note-interne textarea:focus {
   outline: none;
-  border-color: var(--blu-chiar);
-  box-shadow: 0 0 0 2px rgba(66,165,245,0.15);
+  border-color: var(--cyan);
+  box-shadow: 0 0 0 2px rgba(0,200,224,.1);
 }
 
 .rpe-box {
@@ -375,28 +465,31 @@ body {
 
 .rpe-box span {
   font-size: 10px;
-  font-weight: 800;
-  color: var(--viola);
+  font-weight: 700;
+  color: var(--violet);
+  letter-spacing: 1px;
 }
 
 .rpe-box input {
   width: 52px;
   padding: 5px 4px;
-  border: 2px solid var(--viola);
-  border-radius: 6px;
+  border: 1px solid rgba(168,85,247,.4);
+  border-radius: 4px;
   text-align: center;
   font-size: 13px;
   font-weight: 700;
-  color: var(--viola);
-  background: var(--viola-sf);
+  color: var(--violet);
+  background: var(--violet-soft);
+  font-family: 'IBM Plex Mono', monospace;
 }
 
-.rpe-box input:focus { outline: none; background: var(--bianco); }
+.rpe-box input:focus { outline: none; background: rgba(168,85,247,.2); }
 
 .etichetta-sub {
   font-size: 10px;
-  font-weight: 800;
+  font-weight: 700;
   vertical-align: middle;
+  letter-spacing: .5px;
 }
 
 .km-lbl  { background: var(--verde-sf); color: var(--verde); }
@@ -407,8 +500,10 @@ body {
   border: none;
   text-align: center;
   font-size: 11.5px;
+  font-family: 'IBM Plex Mono', monospace;
   padding: 3px 1px;
   background: transparent;
+  color: var(--ice);
   -moz-appearance: textfield;
 }
 
@@ -416,31 +511,32 @@ body {
 .tabella input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
 
 .tabella input[type="number"]:focus {
-  outline: 2px solid var(--oro);
-  background: var(--oro-sf);
+  outline: 2px solid var(--cyan);
+  background: rgba(0,200,224,.08);
   border-radius: 3px;
 }
 
 .cella-tot {
   background: var(--verde-sf);
   color: var(--verde);
-  font-weight: 800;
-  font-size: 11px;
-}
-
-.cella-prog {
-  background: var(--oro-sf);
-  color: #7B5800;
   font-weight: 700;
   font-size: 11px;
 }
 
-.riga-tot td { background: #EEF2FF; font-weight: 700; }
+.cella-prog {
+  background: var(--cyan-soft);
+  color: var(--cyan);
+  font-weight: 700;
+  font-size: 11px;
+}
+
+.riga-tot td { background: rgba(0,200,224,.06); font-weight: 700; }
 .etichetta-tot {
-  background: var(--blu-scuro) !important;
-  color: var(--bianco) !important;
+  background: var(--deep) !important;
+  color: var(--cyan) !important;
   font-size: 10px;
-  font-weight: 900;
+  font-weight: 700;
+  letter-spacing: 1px;
 }
 
 /* ---- AREA SALVATAGGIO ---- */
@@ -450,9 +546,9 @@ body {
   align-items: center;
   justify-content: flex-end;
   gap: 12px;
-  border-top: 1px solid var(--grigio-2);
+  border-top: 1px solid rgba(0,200,224,.1);
   flex-wrap: wrap;
-  background: #FAFBFF;
+  background: rgba(0,200,224,.03);
 }
 
 /* ============================================
@@ -467,70 +563,81 @@ body {
 }
 
 .stat-card {
-  background: var(--bianco);
+  background: var(--panel);
   border-radius: var(--raggio);
   padding: 24px 20px;
   text-align: center;
   box-shadow: var(--ombra);
-  border-top: 4px solid var(--oro);
+  border: 1px solid var(--cyan-border);
+  border-top: 2px solid var(--cyan);
   position: relative;
   overflow: hidden;
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: var(--cyan);
+  box-shadow: 0 0 10px rgba(0,200,224,.5);
 }
 
 .stat-card::after {
   content: '';
   position: absolute;
-  bottom: -24px;
-  right: -24px;
-  width: 90px;
-  height: 90px;
-  background: var(--oro-sf);
+  bottom: -28px; right: -28px;
+  width: 80px; height: 80px;
+  background: radial-gradient(circle, rgba(0,200,224,.12), transparent);
   border-radius: 50%;
 }
 
 .stat-card .numero {
+  font-family: 'Russo One', sans-serif;
   font-size: 44px;
-  font-weight: 900;
-  color: var(--blu-scuro);
+  font-weight: 400;
+  color: var(--ice);
   line-height: 1;
-  position: relative;
-  z-index: 1;
+  position: relative; z-index: 1;
+  text-shadow: 0 0 20px rgba(0,200,224,.2);
 }
 
 .stat-card .etichetta {
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 700;
-  color: var(--grigio-6);
+  color: var(--text-sec);
   margin-top: 6px;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  position: relative;
-  z-index: 1;
+  letter-spacing: 2px;
+  position: relative; z-index: 1;
 }
 
 /* Lista atleti */
 .lista-atleti {
-  background: var(--bianco);
+  background: var(--panel);
   border-radius: var(--raggio);
   box-shadow: var(--ombra);
   overflow: hidden;
+  border: 1px solid var(--cyan-border);
+  border-top: none;
 }
 
 .lista-intestazione {
-  background: var(--blu-scuro);
-  color: var(--bianco);
-  padding: 14px 20px;
+  background: linear-gradient(180deg, #0F2848 0%, var(--deep) 100%);
+  color: var(--ice);
+  padding: 12px 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-weight: 800;
-  font-size: 13px;
-  border-bottom: 3px solid var(--oro);
+  font-family: 'Russo One', sans-serif;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--cyan-border);
 }
 
 .atleta-riga {
-  padding: 13px 20px;
-  border-bottom: 1px solid var(--grigio-2);
+  padding: 12px 20px;
+  border-bottom: 1px solid rgba(0,200,224,.07);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -539,7 +646,7 @@ body {
   gap: 12px;
 }
 
-.atleta-riga:hover { background: var(--blu-sfondo); }
+.atleta-riga:hover { background: var(--cyan-soft); }
 .atleta-riga:last-child { border-bottom: none; }
 
 .atleta-riga-sx {
@@ -552,43 +659,61 @@ body {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: var(--blu-scuro);
-  color: var(--bianco);
+  background: var(--deep);
+  color: var(--cyan);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
-  font-weight: 900;
+  font-family: 'Russo One', sans-serif;
+  font-size: 13px;
+  font-weight: 400;
   flex-shrink: 0;
-  letter-spacing: -0.5px;
-  border: 2px solid var(--oro);
+  letter-spacing: 1px;
+  border: 1.5px solid var(--cyan-border);
+  box-shadow: 0 0 8px rgba(0,200,224,.1);
 }
 
-.atleta-nome  { font-weight: 700; font-size: 14px; color: var(--testo); }
-.atleta-email { font-size: 12px; color: #888; margin-top: 2px; }
-.btn-edit-email { background: none; border: none; cursor: pointer; font-size: 16px; padding: 4px; opacity: 0.6; }
+.atleta-nome  { font-weight: 700; font-size: 13px; color: var(--ice); letter-spacing: .5px; }
+.atleta-email { font-size: 11px; color: var(--text-sec); margin-top: 2px; letter-spacing: .5px; }
+.btn-edit-email { background: none; border: none; cursor: pointer; font-size: 15px; padding: 4px; opacity: 0.5; }
 .btn-edit-email:hover { opacity: 1; }
-.edit-email-form { display: flex; gap: 8px; padding: 8px 16px 12px 56px; background: var(--blu-sfondo); }
-.edit-email-form input { flex: 1; padding: 6px 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 13px; }
-.atleta-email { font-size: 12px; color: var(--grigio-6); margin-top: 2px; }
+.edit-email-form {
+  display: flex; gap: 8px; padding: 8px 16px 12px 56px;
+  background: var(--cyan-soft);
+}
+.edit-email-form input {
+  flex: 1; padding: 6px 10px;
+  border: 1px solid var(--cyan-border);
+  border-radius: 4px; font-size: 12px;
+  background: var(--deep); color: var(--ice);
+  font-family: 'IBM Plex Mono', monospace;
+}
 
 .badge {
-  padding: 4px 12px;
+  padding: 3px 12px;
   border-radius: 20px;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
   flex-shrink: 0;
 }
 
-.badge-verde { background: var(--verde-sf); color: var(--verde); }
+.badge-verde {
+  background: var(--verde-sf);
+  color: var(--verde);
+  border: 1px solid rgba(0,232,122,.25);
+}
 
 /* Crea atleta form */
 .crea-atleta-form {
-  background: var(--bianco);
+  background: var(--panel);
   border-radius: var(--raggio);
   box-shadow: var(--ombra);
   overflow: hidden;
   margin-bottom: 20px;
+  border: 1px solid var(--cyan-border);
+  border-top: none;
 }
 
 .crea-atleta-body {
@@ -605,42 +730,49 @@ body {
 .overlay {
   position: fixed;
   inset: 0;
-  background: rgba(7,18,39,0.65);
+  background: rgba(4,8,20,0.82);
   z-index: 200;
   display: flex;
   align-items: flex-start;
   justify-content: center;
   padding: 16px;
   overflow-y: auto;
-  backdrop-filter: blur(3px);
+  backdrop-filter: blur(4px);
 }
 
 .modale {
-  background: var(--bianco);
+  background: var(--panel);
+  border: 1px solid var(--cyan-border);
   border-radius: var(--raggio);
   width: 100%;
   max-width: 1200px;
   margin: auto;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.45);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.8), 0 0 40px rgba(0,200,224,.08);
 }
 
 .modale-intestazione {
-  background: var(--blu-scuro);
-  color: var(--bianco);
-  padding: 16px 20px;
+  background: linear-gradient(180deg, #0F2848 0%, var(--deep) 100%);
+  color: var(--ice);
+  padding: 14px 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   border-radius: var(--raggio) var(--raggio) 0 0;
-  border-bottom: 3px solid var(--oro);
+  border-bottom: 1px solid var(--cyan-border);
 }
 
-.modale-intestazione h2 { font-size: 15px; font-weight: 900; }
+.modale-intestazione h2 {
+  font-family: 'Russo One', sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
 
 .btn-chiudi {
-  background: rgba(255,255,255,0.15);
-  border: 1px solid rgba(255,255,255,0.25);
-  color: var(--bianco);
+  background: rgba(0,200,224,.08);
+  border: 1px solid var(--cyan-border);
+  color: var(--cyan);
   width: 32px;
   height: 32px;
   border-radius: 50%;
@@ -653,7 +785,7 @@ body {
   transition: background 0.2s;
 }
 
-.btn-chiudi:hover { background: rgba(255,255,255,0.3); }
+.btn-chiudi:hover { background: rgba(0,200,224,.2); }
 
 .modale-corpo { padding: 20px; }
 
@@ -666,33 +798,37 @@ body {
 }
 
 .tab-sett {
-  padding: 6px 18px;
+  padding: 5px 16px;
   border-radius: 20px;
-  border: 2px solid var(--blu-scuro);
-  color: var(--blu-scuro);
+  border: 1px solid var(--cyan-border);
+  color: var(--text-sec);
   background: transparent;
-  font-size: 12px;
-  font-weight: 800;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .tab-sett.attivo {
-  background: var(--oro);
-  border-color: var(--oro);
-  color: #1A1A1A;
+  background: var(--cyan);
+  border-color: var(--cyan);
+  color: var(--void);
+  box-shadow: 0 0 10px rgba(0,200,224,.3);
 }
 
 /* Diario sola lettura */
 .info-diario {
-  background: var(--blu-sfondo);
-  border-left: 4px solid var(--blu-med);
-  border-radius: 8px;
+  background: var(--cyan-soft);
+  border-left: 3px solid var(--cyan);
+  border-radius: var(--raggio);
   padding: 10px 14px;
   margin-bottom: 14px;
-  font-size: 13px;
-  color: var(--blu);
+  font-size: 12px;
+  color: var(--cyan);
   font-weight: 600;
+  letter-spacing: .5px;
 }
 
 .tabella-readonly input { pointer-events: none; }
@@ -702,9 +838,10 @@ body {
 .stato-vuoto {
   padding: 48px 20px;
   text-align: center;
-  color: var(--grigio-6);
-  font-size: 14px;
+  color: var(--text-sec);
+  font-size: 13px;
   font-weight: 500;
+  letter-spacing: 1px;
 }
 
 /* ---- AVVISI ---- */
@@ -716,27 +853,27 @@ body {
   align-items: center;
   gap: 10px;
   cursor: pointer;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
-  color: var(--testo);
+  color: var(--ice);
   padding: 4px 0;
   text-transform: none;
   letter-spacing: 0;
 }
 .label-checkbox input[type="checkbox"] {
-  width: 18px;
-  height: 18px;
-  accent-color: var(--blu);
+  width: 16px; height: 16px;
+  accent-color: var(--cyan);
   cursor: pointer;
 }
 
 .selezione-atleti {
-  border: 2px solid var(--grigio-3);
-  border-radius: 10px;
+  border: 1px solid var(--cyan-border);
+  border-radius: var(--raggio);
   padding: 4px 14px;
   max-height: 200px;
   overflow-y: auto;
   margin-top: 8px;
+  background: var(--deep);
 }
 
 .label-checkbox-atleta {
@@ -745,18 +882,17 @@ body {
   gap: 10px;
   padding: 8px 0;
   cursor: pointer;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
-  color: var(--testo);
-  border-bottom: 1px solid var(--grigio-2);
+  color: var(--ice);
+  border-bottom: 1px solid rgba(0,200,224,.07);
   text-transform: none;
   letter-spacing: 0;
 }
 .label-checkbox-atleta:last-child { border-bottom: none; }
 .label-checkbox-atleta input[type="checkbox"] {
-  width: 16px;
-  height: 16px;
-  accent-color: var(--blu);
+  width: 15px; height: 15px;
+  accent-color: var(--cyan);
 }
 
 .avviso-footer {
@@ -770,15 +906,15 @@ body {
 /* Cards avvisi (vista atleta) */
 .avviso-card {
   padding: 14px 20px;
-  border-bottom: 1px solid var(--grigio-2);
+  border-bottom: 1px solid rgba(0,200,224,.07);
   cursor: pointer;
   transition: background 0.15s;
 }
 .avviso-card:last-child { border-bottom: none; }
-.avviso-card:hover { background: var(--blu-sfondo); }
+.avviso-card:hover { background: var(--cyan-soft); }
 .avviso-card.non-letto {
-  border-left: 4px solid var(--oro);
-  background: var(--oro-sf);
+  border-left: 3px solid var(--cyan);
+  background: rgba(0,200,224,.05);
 }
 
 .avviso-header {
@@ -788,25 +924,54 @@ body {
   gap: 12px;
   margin-bottom: 4px;
 }
-.avviso-titolo { font-weight: 800; font-size: 14px; }
-.avviso-data   { font-size: 11px; color: var(--grigio-6); white-space: nowrap; flex-shrink: 0; }
-.avviso-testo  { font-size: 13px; color: var(--grigio-6); margin-top: 4px; }
-.avviso-img    { max-width: 100%; border-radius: 8px; margin-top: 10px; display: block; max-height: 400px; object-fit: contain; }
-.avviso-pdf    { margin-top: 10px; padding: 10px 14px; background: var(--oro-sf); border-radius: 8px; font-size: 14px; }
-.avviso-pdf a  { color: var(--blu); font-weight: 600; text-decoration: none; }
+.avviso-titolo { font-weight: 700; font-size: 13px; color: var(--ice); letter-spacing: .5px; }
+.avviso-data   { font-size: 10px; color: var(--text-sec); white-space: nowrap; flex-shrink: 0; letter-spacing: 1px; }
+.avviso-testo  { font-size: 12px; color: var(--text-sec); margin-top: 4px; }
+.avviso-img    { max-width: 100%; border-radius: 6px; margin-top: 10px; display: block; max-height: 400px; object-fit: contain; border: 1px solid var(--cyan-border); }
+.avviso-pdf    { margin-top: 10px; padding: 10px 14px; background: var(--panel-alt); border-radius: 6px; font-size: 13px; border: 1px solid var(--cyan-border); }
+.avviso-pdf a  { color: var(--cyan); font-weight: 600; text-decoration: none; }
 .avviso-pdf a:hover { text-decoration: underline; }
 
 /* ── STATISTICHE ─────────────────────────────────── */
-.stats-tabs       { display: flex; gap: 8px; padding: 12px 16px 0; flex-wrap: wrap; }
-.stats-tab        { padding: 6px 16px; border-radius: 20px; border: 2px solid var(--blu-med); background: transparent; color: var(--blu-med); font-size: 13px; font-weight: 600; cursor: pointer; transition: all .2s; }
-.stats-tab.attivo { background: var(--blu-med); color: #fff; }
+.stats-tabs {
+  display: flex; gap: 8px; padding: 14px 16px 0; flex-wrap: wrap;
+}
+.stats-tab {
+  padding: 5px 16px; border-radius: 20px;
+  border: 1px solid var(--cyan-border);
+  background: transparent; color: var(--text-sec);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px; font-weight: 600; letter-spacing: 1px;
+  cursor: pointer; transition: all .2s;
+}
+.stats-tab.attivo {
+  background: var(--cyan-soft); color: var(--cyan);
+  border-color: var(--cyan);
+}
 .stat-tab-content { padding: 16px; }
 .charts-grid-2    { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-.chart-box        { background: #f8f9ff; border-radius: 10px; padding: 14px; border: 1px solid #e0e6ff; }
-.chart-titolo     { font-size: 13px; font-weight: 700; color: var(--blu-scuro); margin-bottom: 10px; }
-.modale-nav       { display: flex; gap: 8px; padding: 12px 16px 0; border-bottom: 1px solid #e0e6ff; }
-.modale-nav-btn   { padding: 8px 20px; border: none; background: transparent; color: #888; font-size: 14px; font-weight: 600; cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -1px; transition: all .2s; }
-.modale-nav-btn.attivo { color: var(--blu); border-bottom-color: var(--oro); }
+.chart-box {
+  background: var(--deep); border-radius: var(--raggio);
+  padding: 14px; border: 1px solid var(--cyan-border);
+}
+.chart-titolo {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px; font-weight: 700; letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-sec); margin-bottom: 12px;
+}
+.modale-nav {
+  display: flex; gap: 0; padding: 0 16px;
+  border-bottom: 1px solid rgba(0,200,224,.1);
+}
+.modale-nav-btn {
+  padding: 10px 20px; border: none; background: transparent;
+  color: var(--text-sec); font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px; font-weight: 600; letter-spacing: 1px;
+  cursor: pointer; border-bottom: 2px solid transparent;
+  margin-bottom: -1px; transition: all .2s; text-transform: uppercase;
+}
+.modale-nav-btn.attivo { color: var(--cyan); border-bottom-color: var(--cyan); }
 
 @media (max-width: 600px) {
   .charts-grid-2 { grid-template-columns: 1fr; }
@@ -815,9 +980,10 @@ body {
 .btn-nascondi {
   background: none;
   border: none;
-  color: var(--grigio-6);
+  color: var(--text-sec);
   font-size: 11px;
   font-weight: 600;
+  font-family: 'IBM Plex Mono', monospace;
   cursor: pointer;
   padding: 2px 6px;
   border-radius: 4px;
@@ -827,8 +993,8 @@ body {
 
 .badge-non-letto {
   background: var(--rosso);
-  color: var(--bianco);
-  font-size: 11px;
+  color: #fff;
+  font-size: 10px;
   font-weight: 800;
   min-width: 20px;
   height: 20px;
@@ -838,43 +1004,40 @@ body {
   align-items: center;
   justify-content: center;
   margin-left: 8px;
+  box-shadow: 0 0 8px rgba(255,64,96,.3);
 }
 
 /* ---- LIGHTBOX ---- */
 .lightbox {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.92);
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.95);
   z-index: 999;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 20px;
   cursor: zoom-out;
+  backdrop-filter: blur(6px);
 }
 .lightbox img {
   max-width: 100%;
   max-height: 90vh;
   object-fit: contain;
-  border-radius: 8px;
-  box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+  border-radius: 6px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.8), 0 0 0 1px var(--cyan-border);
 }
 .lightbox-chiudi {
-  position: fixed;
-  top: 16px;
-  right: 20px;
-  color: white;
-  font-size: 28px;
-  font-weight: 900;
-  cursor: pointer;
+  position: fixed; top: 16px; right: 20px;
+  color: var(--cyan); font-size: 28px;
+  font-weight: 900; cursor: pointer;
   line-height: 1;
-  text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+  text-shadow: 0 0 12px rgba(0,200,224,.5);
 }
 
 /* ---- AVVISI INVIATI (allenatrice) ---- */
 .avviso-inviato {
   padding: 12px 20px;
-  border-bottom: 1px solid var(--grigio-2);
+  border-bottom: 1px solid rgba(0,200,224,.07);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -882,64 +1045,50 @@ body {
 }
 .avviso-inviato:last-child { border-bottom: none; }
 .avviso-inviato-info { flex: 1; }
-.avviso-inviato-titolo { font-weight: 700; font-size: 13px; }
-.avviso-inviato-meta { font-size: 11px; color: var(--grigio-6); margin-top: 3px; }
+.avviso-inviato-titolo { font-weight: 700; font-size: 12px; color: var(--ice); letter-spacing: .5px; }
+.avviso-inviato-meta { font-size: 10px; color: var(--text-sec); margin-top: 3px; letter-spacing: .5px; }
 
 .btn-elimina {
   background: var(--rosso-sf);
   color: var(--rosso);
-  border: none;
-  border-radius: 8px;
-  padding: 6px 12px;
-  font-size: 12px;
+  border: 1px solid rgba(255,64,96,.25);
+  border-radius: var(--raggio);
+  padding: 5px 12px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
   font-weight: 700;
   cursor: pointer;
   flex-shrink: 0;
-  transition: background 0.2s;
+  transition: all 0.2s;
 }
-.btn-elimina:hover { background: var(--rosso); color: white; }
+.btn-elimina:hover { background: var(--rosso); color: white; box-shadow: 0 0 10px rgba(255,64,96,.3); }
 
 /* ---- RESPONSIVE ---- */
 @media (max-width: 640px) {
   .contenuto { padding: 10px; }
 
   .login-box { padding: 28px 20px; }
-  .login-logo .logo-img { width: 90px; height: 90px; }
-  .login-logo h1 { font-size: 17px; }
+  .login-logo .logo-img { width: 80px; height: 80px; }
+  .login-logo h1 { font-size: 14px; }
 
-  /* Header compatto */
   .intestazione { padding: 8px 14px; }
   .logo-header { width: 32px; height: 32px; }
-  .intestazione-sx h1 { font-size: 13px; }
-  .intestazione-sx .utente { font-size: 11px; }
+  .intestazione-sx h1 { font-size: 12px; }
 
-  /* Selettore settimana: griglia 2 colonne */
   .selettore-settimana {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 10px;
     padding: 14px;
-    border-left-width: 3px;
   }
   .selettore-settimana .campo { min-width: unset; flex: unset; }
   .selettore-settimana .campo:first-child { grid-column: 1 / -1; }
 
-  /* Avvisi: padding ridotto */
   .avviso-card { padding: 12px 14px; }
-
-  /* Crea atleta */
   .crea-atleta-body { grid-template-columns: 1fr; }
-
-  /* Cards stats */
   .stat-card { padding: 18px 14px; }
   .stat-card .numero { font-size: 36px; }
-
-  /* Scheda titolo */
-  .scheda-titolo { font-size: 11px; padding: 11px 14px; }
-
-  /* Area salva */
+  .scheda-titolo { font-size: 10px; padding: 10px 14px; }
   .area-salva { padding: 12px 14px; }
-
-  /* Form avvisi allenatrice */
   .avviso-form { padding: 14px; }
 }

@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Winter SC Subiaco – Design Concepts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;600;700&family=Playfair+Display:wght@700;900&family=Lora:wght@400;600&family=Barlow+Condensed:wght@400;700;900&family=Space+Mono:wght@700&family=Russo+One&family=IBM+Plex+Mono:wght@400;700&family=Cormorant+Garant:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #111; font-family: sans-serif; }
+
+.selector {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; gap: 2px; background: #000; padding: 8px;
+  overflow-x: auto;
+}
+.sel-btn {
+  flex: 1; min-width: 120px; padding: 10px 6px; border: none; cursor: pointer;
+  font-weight: 700; font-size: 11px; letter-spacing: 1px; text-transform: uppercase;
+  transition: all .3s; white-space: nowrap;
+}
+.sel-btn:nth-child(1) { background: #1A3A5C; color: #4DB6E8; }
+.sel-btn:nth-child(2) { background: #1A2E1A; color: #C4E8C4; }
+.sel-btn:nth-child(3) { background: #FFD700; color: #000; }
+.sel-btn:nth-child(4) { background: #080C18; color: #00B4D8; }
+.sel-btn:nth-child(5) { background: #F6F3EE; color: #071B36; }
+.sel-btn.attivo { opacity: 1; }
+.sel-btn:not(.attivo) { opacity: 0.42; }
+
+.concept { display: none; padding-top: 54px; min-height: 100vh; }
+.concept.attivo { display: block; }
+
+/* ═══════════════════════════════════════════════
+   CONCEPT 1 – ALPINE MINIMALIST
+═══════════════════════════════════════════════ */
+#c1 {
+  background: #EEF3F8;
+  --blu:    #1A3A5C;
+  --ice:    #4DB6E8;
+  --white:  #F8FBFF;
+  --grey:   #8FA3B8;
+  --accent: #0077B6;
+}
+#c1 header {
+  background: var(--blu);
+  padding: 0 24px;
+  display: flex; align-items: stretch; justify-content: space-between;
+  clip-path: polygon(0 0, 100% 0, 100% 80%, 97% 100%, 0 100%);
+  padding-bottom: 24px;
+}
+#c1 .logo-area { display: flex; align-items: center; gap: 16px; padding: 20px 0; }
+#c1 .logo-sq {
+  width: 48px; height: 48px; background: var(--ice);
+  clip-path: polygon(0 0, 85% 0, 100% 15%, 100% 100%, 15% 100%, 0 85%);
+  display: flex; align-items: center; justify-content: center; font-size: 22px;
+}
+#c1 h1 { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 3px; color: #fff; line-height: 1; }
+#c1 .sub { font-family: 'Rajdhani', sans-serif; color: var(--ice); font-size: 11px; letter-spacing: 4px; text-transform: uppercase; }
+#c1 .nav { display: flex; gap: 2px; background: var(--white); margin: -2px 24px 0; border-left: 3px solid var(--ice); box-shadow: 0 4px 20px rgba(26,58,92,.12); }
+#c1 .nav-item { flex: 1; padding: 14px 8px; text-align: center; font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--grey); cursor: pointer; border-bottom: 2px solid transparent; transition: all .2s; position: relative; }
+#c1 .nav-item.a { color: var(--blu); border-bottom-color: var(--ice); }
+#c1 .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin: 24px; background: rgba(77,182,232,.08); border: 1px solid rgba(77,182,232,.2); border-radius: 2px; }
+#c1 .stat { padding: 20px 16px; text-align: center; border-right: 1px solid rgba(77,182,232,.15); }
+#c1 .stat:last-child { border-right: none; }
+#c1 .stat-num { font-family: 'Bebas Neue', sans-serif; font-size: 42px; color: var(--blu); line-height: 1; letter-spacing: 2px; }
+#c1 .stat-unit { font-family: 'Rajdhani', sans-serif; font-size: 11px; color: var(--ice); letter-spacing: 3px; text-transform: uppercase; margin-top: 2px; }
+#c1 .stat-label { font-family: 'Rajdhani', sans-serif; font-size: 11px; color: var(--grey); letter-spacing: 1px; margin-top: 4px; }
+#c1 .cards { padding: 0 24px 24px; display: grid; gap: 16px; }
+#c1 .card { background: var(--white); position: relative; overflow: hidden; padding: 20px 24px; clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px)); }
+#c1 .card::after { content: ''; position: absolute; top: 0; right: 16px; width: 0; height: 0; border-style: solid; border-width: 0 16px 16px 0; border-color: transparent var(--ice) transparent transparent; }
+#c1 .card-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+#c1 .card-title { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--blu); letter-spacing: 2px; }
+#c1 .badge { font-family: 'Rajdhani', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 3px 10px; background: var(--ice); color: #fff; clip-path: polygon(4px 0, 100% 0, calc(100% - 4px) 100%, 0 100%); }
+#c1 .progress-bar { height: 3px; background: rgba(77,182,232,.15); margin: 8px 0; }
+#c1 .progress-fill { height: 100%; background: linear-gradient(90deg, var(--ice), var(--accent)); }
+#c1 .row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(26,58,92,.06); }
+#c1 .row:last-child { border-bottom: none; }
+#c1 .row-label { font-family: 'Rajdhani', sans-serif; font-size: 13px; color: var(--grey); letter-spacing: 1px; }
+#c1 .row-val { font-family: 'Bebas Neue', sans-serif; font-size: 18px; color: var(--blu); letter-spacing: 1px; }
+#c1 .deco { position: absolute; right: -30px; top: 50%; transform: translateY(-50%); opacity: .04; font-size: 120px; color: var(--blu); pointer-events: none; font-family: 'Bebas Neue'; }
+
+/* ═══════════════════════════════════════════════
+   CONCEPT 2 – NORDIC DARK
+═══════════════════════════════════════════════ */
+#c2 {
+  background: #0D1F0D;
+  --forest: #0D1F0D; --pine: #1A3A1A; --birch: #E8DCC8;
+  --amber: #C4912A; --snow: #F2EDE4; --moss: #4A7C59; --text: #B8CDB8;
+}
+#c2 header { background: var(--pine); padding: 24px; border-bottom: 1px solid rgba(196,145,42,.2); position: relative; overflow: hidden; }
+#c2 header::before { content: '❄ ❄ ❄ ❄ ❄ ❄ ❄ ❄ ❄ ❄ ❄ ❄ ❄ ❄ ❄ ❄ ❄ ❄ ❄ ❄'; position: absolute; bottom: 0; left: 0; right: 0; font-size: 10px; letter-spacing: 8px; color: rgba(196,145,42,.12); white-space: nowrap; overflow: hidden; }
+#c2 .logo-row { display: flex; align-items: center; gap: 16px; margin-bottom: 4px; }
+#c2 .logo-ring { width: 52px; height: 52px; border-radius: 50%; border: 2px solid var(--amber); display: flex; align-items: center; justify-content: center; font-size: 24px; background: rgba(196,145,42,.08); }
+#c2 h1 { font-family: 'Playfair Display', serif; font-size: 22px; color: var(--birch); letter-spacing: 1px; }
+#c2 .sub { font-family: 'Lora', serif; font-size: 11px; color: var(--amber); letter-spacing: 2px; font-style: italic; }
+#c2 .user-chip { margin-top: 12px; display: inline-flex; align-items: center; gap: 8px; background: rgba(196,145,42,.1); border: 1px solid rgba(196,145,42,.25); padding: 6px 14px; border-radius: 100px; font-family: 'Lora', serif; font-size: 12px; color: var(--birch); }
+#c2 .user-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--moss); }
+#c2 .nav { display: flex; padding: 0 16px; border-bottom: 1px solid rgba(196,145,42,.15); }
+#c2 .nav-item { padding: 14px 16px; font-family: 'Lora', serif; font-size: 13px; color: var(--text); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all .25s; }
+#c2 .nav-item.a { color: var(--birch); border-bottom-color: var(--amber); }
+#c2 .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); padding: 20px 16px; gap: 12px; }
+#c2 .stat { background: var(--pine); border: 1px solid rgba(196,145,42,.15); border-radius: 8px; padding: 16px; text-align: center; position: relative; overflow: hidden; }
+#c2 .stat::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(196,145,42,.05) 0%, transparent 60%); }
+#c2 .stat-num { font-family: 'Playfair Display', serif; font-size: 36px; font-weight: 900; color: var(--birch); line-height: 1; }
+#c2 .stat-unit { font-size: 11px; color: var(--amber); letter-spacing: 2px; text-transform: uppercase; margin-top: 2px; font-family: 'Lora', serif; }
+#c2 .stat-label { font-size: 10px; color: var(--text); margin-top: 6px; font-family: 'Lora', serif; }
+#c2 .cards { padding: 0 16px 24px; display: grid; gap: 12px; }
+#c2 .card { background: var(--pine); border: 1px solid rgba(196,145,42,.15); border-radius: 12px; padding: 20px; position: relative; overflow: hidden; }
+#c2 .card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--amber), transparent); }
+#c2 .card-title { font-family: 'Playfair Display', serif; font-size: 17px; color: var(--birch); margin-bottom: 14px; display: flex; align-items: center; gap: 10px; }
+#c2 .card-title span { font-size: 18px; }
+#c2 .row { display: flex; justify-content: space-between; align-items: center; padding: 9px 0; border-bottom: 1px solid rgba(196,145,42,.08); }
+#c2 .row:last-child { border-bottom: none; }
+#c2 .row-label { font-family: 'Lora', serif; font-size: 13px; color: var(--text); }
+#c2 .row-val { font-family: 'Playfair Display', serif; font-size: 17px; color: var(--birch); }
+#c2 .pill { padding: 3px 12px; border-radius: 100px; font-size: 10px; background: rgba(74,124,89,.25); color: var(--moss); letter-spacing: 1px; font-family: 'Lora', serif; border: 1px solid rgba(74,124,89,.3); }
+#c2 .week-bar { display: flex; gap: 3px; margin-top: 14px; }
+#c2 .day-bar { flex: 1; border-radius: 3px 3px 0 0; background: var(--moss); opacity: 0.7; }
+#c2 .day-bar.a { opacity: 1; background: var(--amber); }
+#c2 .day-label { display: flex; gap: 3px; margin-top: 4px; }
+#c2 .day-lbl { flex: 1; text-align: center; font-size: 9px; color: var(--text); font-family: 'Lora', serif; }
+
+/* ═══════════════════════════════════════════════
+   CONCEPT 3 – RACING BOLD
+═══════════════════════════════════════════════ */
+#c3 {
+  background: #0A0A0A;
+  --yellow: #FFD700; --yellow2: #FFC107; --red: #E50000;
+  --white: #FFFFFF; --grey: #888; --dark: #141414; --darker: #0A0A0A;
+}
+#c3 header { background: var(--yellow); padding: 20px 20px 0; position: relative; overflow: hidden; }
+#c3 header::before { content: ''; position: absolute; bottom: -1px; left: 0; right: 0; height: 28px; background: var(--darker); clip-path: polygon(0 100%, 100% 100%, 100% 0, 0 100%); }
+#c3 header::after { content: 'WSC'; position: absolute; right: -10px; top: -10px; font-family: 'Barlow Condensed', sans-serif; font-weight: 900; font-size: 100px; color: rgba(0,0,0,.08); letter-spacing: -4px; line-height: 1; pointer-events: none; }
+#c3 .logo-row { display: flex; align-items: center; gap: 14px; padding-bottom: 24px; }
+#c3 .bib { background: #000; color: var(--yellow); width: 52px; height: 52px; display: flex; align-items: center; justify-content: center; font-family: 'Barlow Condensed', sans-serif; font-weight: 900; font-size: 22px; letter-spacing: 1px; clip-path: polygon(0 0, 100% 0, 100% 75%, 85% 100%, 15% 100%, 0 75%); }
+#c3 h1 { font-family: 'Barlow Condensed', sans-serif; font-weight: 900; font-size: 30px; letter-spacing: 2px; text-transform: uppercase; color: #000; line-height: 1; }
+#c3 .sub { font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 3px; color: rgba(0,0,0,.6); }
+#c3 .race-bar { background: #000; padding: 10px 20px; display: flex; border-bottom: 3px solid var(--yellow); }
+#c3 .race-stat { flex: 1; padding: 8px 12px; border-right: 1px solid #222; text-align: center; }
+#c3 .race-stat:last-child { border-right: none; }
+#c3 .race-num { font-family: 'Barlow Condensed', sans-serif; font-weight: 900; font-size: 36px; color: var(--yellow); line-height: 1; letter-spacing: 1px; }
+#c3 .race-lbl { font-family: 'Space Mono', monospace; font-size: 8px; color: var(--grey); letter-spacing: 2px; text-transform: uppercase; margin-top: 2px; }
+#c3 .nav { display: flex; background: var(--dark); gap: 1px; border-bottom: 2px solid #1a1a1a; }
+#c3 .nav-item { flex: 1; padding: 12px 4px; text-align: center; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--grey); cursor: pointer; position: relative; transition: all .2s; }
+#c3 .nav-item.a { color: #000; background: var(--yellow); }
+#c3 .cards { padding: 12px; display: grid; gap: 8px; }
+#c3 .card { background: var(--dark); border: 1px solid #222; position: relative; overflow: hidden; padding: 0; }
+#c3 .card-stripe { height: 4px; background: repeating-linear-gradient(90deg, var(--yellow) 0px, var(--yellow) 12px, #000 12px, #000 16px); }
+#c3 .card-body { padding: 16px 20px; }
+#c3 .card-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+#c3 .card-num { font-family: 'Barlow Condensed', sans-serif; font-weight: 900; font-size: 13px; color: var(--yellow); letter-spacing: 3px; text-transform: uppercase; }
+#c3 .card-title { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 18px; color: var(--white); letter-spacing: 1px; text-transform: uppercase; }
+#c3 .row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #1E1E1E; }
+#c3 .row:last-child { border-bottom: none; }
+#c3 .row-label { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--grey); text-transform: uppercase; letter-spacing: 1px; }
+#c3 .row-val { font-family: 'Barlow Condensed', sans-serif; font-weight: 900; font-size: 22px; color: var(--yellow); }
+#c3 .tag { background: var(--red); color: #fff; padding: 2px 8px; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 10px; letter-spacing: 2px; }
+
+/* ═══════════════════════════════════════════════
+   CONCEPT 4 – AURORA GRID
+   Cyber sport: griglia tecnica + luce nordica
+═══════════════════════════════════════════════ */
+#c4 {
+  background: #060A14;
+  --void:   #060A14;
+  --deep:   #0B1628;
+  --panel:  #0D1F35;
+  --cyan:   #00C8E0;
+  --cyan2:  #00FFF7;
+  --purple: #7B2FE0;
+  --violet: #A855F7;
+  --ice:    #C8EEF8;
+  --text:   #7A9BB8;
+  --border: rgba(0,200,224,.18);
+  --glow:   0 0 12px rgba(0,200,224,.3);
+}
+
+@keyframes auroraShift {
+  0%   { opacity: .12; transform: scale(1)    rotate(0deg);   }
+  33%  { opacity: .20; transform: scale(1.08) rotate(2deg);   }
+  66%  { opacity: .16; transform: scale(.96)  rotate(-1deg);  }
+  100% { opacity: .12; transform: scale(1)    rotate(0deg);   }
+}
+@keyframes scanPulse {
+  0%, 100% { opacity: .04; } 50% { opacity: .07; }
+}
+@keyframes blinkDot {
+  0%, 100% { opacity: 1; } 50% { opacity: 0; }
+}
+
+#c4 .grid-bg {
+  position: fixed; inset: 54px 0 0;
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none; z-index: 0; opacity: 0.5;
+}
+#c4 .aurora-blob {
+  position: fixed; top: 54px; left: -20%; width: 80%; height: 340px;
+  background: radial-gradient(ellipse at 40% 50%,
+    rgba(0,200,224,.22) 0%,
+    rgba(123,47,224,.14) 50%,
+    transparent 75%);
+  filter: blur(60px);
+  animation: auroraShift 8s ease-in-out infinite;
+  pointer-events: none; z-index: 0;
+}
+#c4 .aurora-blob2 {
+  position: fixed; top: 200px; right: -10%; width: 60%; height: 280px;
+  background: radial-gradient(ellipse at 60% 40%,
+    rgba(168,85,247,.18) 0%,
+    rgba(0,200,224,.08) 60%,
+    transparent 80%);
+  filter: blur(70px);
+  animation: auroraShift 11s ease-in-out infinite reverse;
+  pointer-events: none; z-index: 0;
+}
+#c4 .scanlines {
+  position: fixed; inset: 0; pointer-events: none; z-index: 1;
+  background: repeating-linear-gradient(
+    0deg, transparent, transparent 3px,
+    rgba(0,200,224,.025) 3px, rgba(0,200,224,.025) 4px
+  );
+  animation: scanPulse 4s ease-in-out infinite;
+}
+
+/* C4 Header */
+#c4 .status-bar {
+  background: var(--deep); border-bottom: 1px solid var(--border);
+  padding: 6px 20px; display: flex; justify-content: space-between; align-items: center;
+  position: relative; z-index: 2;
+}
+#c4 .status-left { display: flex; align-items: center; gap: 16px; }
+#c4 .live-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--cyan); animation: blinkDot 1.4s ease-in-out infinite;
+  box-shadow: 0 0 6px var(--cyan);
+}
+#c4 .status-txt {
+  font-family: 'IBM Plex Mono', monospace; font-size: 9px;
+  color: var(--text); letter-spacing: 2px; text-transform: uppercase;
+}
+#c4 .status-txt em { color: var(--cyan); font-style: normal; }
+#c4 .status-time {
+  font-family: 'IBM Plex Mono', monospace; font-size: 10px;
+  color: var(--text); letter-spacing: 1px;
+}
+
+#c4 header {
+  background: linear-gradient(180deg, var(--deep) 0%, var(--void) 100%);
+  padding: 20px 20px 24px;
+  border-bottom: 1px solid var(--border);
+  position: relative; z-index: 2; overflow: hidden;
+}
+#c4 .logo-area { display: flex; align-items: center; gap: 16px; }
+#c4 .logo-hex {
+  width: 54px; height: 54px;
+  background: var(--panel); border: 1px solid var(--cyan);
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  display: flex; align-items: center; justify-content: center; font-size: 22px;
+  box-shadow: 0 0 20px rgba(0,200,224,.2);
+}
+#c4 .logo-txt { flex: 1; }
+#c4 h1 {
+  font-family: 'Russo One', sans-serif; font-size: 22px; color: var(--ice);
+  letter-spacing: 2px; text-transform: uppercase; line-height: 1.1;
+}
+#c4 .sub {
+  font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 3px;
+  color: var(--cyan); text-transform: uppercase; margin-top: 4px;
+}
+#c4 .user-tag {
+  background: rgba(0,200,224,.06); border: 1px solid var(--border);
+  padding: 6px 12px; display: flex; align-items: center; gap: 8px;
+}
+#c4 .user-tag-lbl { font-family: 'IBM Plex Mono', monospace; font-size: 9px; color: var(--text); letter-spacing: 1px; }
+#c4 .user-tag-val { font-family: 'Russo One', sans-serif; font-size: 12px; color: var(--cyan); }
+#c4 .corner-deco {
+  position: absolute; bottom: 16px; right: 16px;
+  font-family: 'Russo One', sans-serif; font-size: 72px; letter-spacing: -2px;
+  color: rgba(0,200,224,.04); line-height: 1; pointer-events: none;
+}
+
+/* C4 Nav */
+#c4 .nav {
+  display: flex; background: var(--deep); border-bottom: 1px solid var(--border);
+  position: relative; z-index: 2;
+}
+#c4 .nav-item {
+  flex: 1; padding: 12px 8px; text-align: center;
+  font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--text); cursor: pointer;
+  border-bottom: 2px solid transparent; transition: all .2s;
+  position: relative;
+}
+#c4 .nav-item.a {
+  color: var(--cyan); border-bottom-color: var(--cyan);
+}
+#c4 .nav-item.a::before {
+  content: ''; position: absolute; bottom: -2px; left: 50%; transform: translateX(-50%);
+  width: 40%; height: 2px; background: var(--cyan); box-shadow: var(--glow);
+}
+
+/* C4 Stats */
+#c4 .stats-strip {
+  display: grid; grid-template-columns: repeat(4,1fr);
+  gap: 1px; background: var(--border);
+  border: 1px solid var(--border); margin: 20px;
+  position: relative; z-index: 2;
+}
+#c4 .stat-box {
+  background: var(--panel); padding: 18px 12px; text-align: center;
+  position: relative;
+}
+#c4 .stat-box::before {
+  content: attr(data-label);
+  position: absolute; top: 8px; left: 8px;
+  font-family: 'IBM Plex Mono', monospace; font-size: 7px;
+  letter-spacing: 2px; text-transform: uppercase; color: var(--text); opacity: .6;
+}
+#c4 .stat-num {
+  font-family: 'Russo One', sans-serif; font-size: 38px; color: var(--ice);
+  line-height: 1; text-shadow: 0 0 20px rgba(0,200,224,.25);
+}
+#c4 .stat-num em { font-style: normal; font-size: 16px; color: var(--cyan); margin-left: 2px; }
+#c4 .stat-bar { height: 2px; background: rgba(0,200,224,.1); margin: 10px 0 0; }
+#c4 .stat-fill { height: 100%; background: var(--cyan); box-shadow: 0 0 8px rgba(0,200,224,.5); transition: width 1s; }
+#c4 .stat-sub { font-family: 'IBM Plex Mono', monospace; font-size: 8px; color: var(--text); letter-spacing: 1px; margin-top: 6px; }
+
+/* C4 Cards */
+#c4 .cards { padding: 0 20px 24px; display: grid; gap: 12px; position: relative; z-index: 2; }
+#c4 .card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  position: relative; overflow: hidden;
+}
+#c4 .card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, var(--cyan), var(--violet), transparent);
+}
+#c4 .card-corner {
+  position: absolute; width: 12px; height: 12px;
+  border-color: var(--cyan); border-style: solid;
+}
+#c4 .card-corner.tl { top: 6px; left: 6px; border-width: 1px 0 0 1px; }
+#c4 .card-corner.tr { top: 6px; right: 6px; border-width: 1px 1px 0 0; }
+#c4 .card-corner.bl { bottom: 6px; left: 6px; border-width: 0 0 1px 1px; }
+#c4 .card-corner.br { bottom: 6px; right: 6px; border-width: 0 1px 1px 0; }
+#c4 .card-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 18px; border-bottom: 1px solid rgba(0,200,224,.08);
+}
+#c4 .card-id { font-family: 'IBM Plex Mono', monospace; font-size: 9px; color: var(--cyan); letter-spacing: 3px; }
+#c4 .card-title { font-family: 'Russo One', sans-serif; font-size: 14px; color: var(--ice); letter-spacing: 1px; text-transform: uppercase; }
+#c4 .status-badge {
+  font-family: 'IBM Plex Mono', monospace; font-size: 8px; letter-spacing: 2px;
+  padding: 3px 8px; border: 1px solid var(--cyan); color: var(--cyan);
+  text-transform: uppercase;
+}
+#c4 .data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: rgba(0,200,224,.06); }
+#c4 .data-cell { background: var(--panel); padding: 14px 18px; }
+#c4 .data-lbl { font-family: 'IBM Plex Mono', monospace; font-size: 8px; color: var(--text); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px; }
+#c4 .data-val { font-family: 'Russo One', sans-serif; font-size: 28px; color: var(--ice); line-height: 1; }
+#c4 .data-val small { font-size: 13px; color: var(--cyan); margin-left: 2px; font-family: 'IBM Plex Mono', monospace; }
+#c4 .data-delta { font-family: 'IBM Plex Mono', monospace; font-size: 9px; margin-top: 4px; }
+#c4 .delta-up { color: #00E87A; } .delta-dn { color: #FF4060; }
+#c4 .week-vis { padding: 14px 18px; }
+#c4 .week-vis-lbl { font-family: 'IBM Plex Mono', monospace; font-size: 8px; color: var(--text); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; }
+#c4 .bars-row { display: flex; gap: 4px; align-items: flex-end; height: 44px; }
+#c4 .c4-bar { flex: 1; background: rgba(0,200,224,.15); border-top: 1px solid rgba(0,200,224,.3); position: relative; }
+#c4 .c4-bar.active { background: rgba(0,200,224,.35); border-top-color: var(--cyan); box-shadow: 0 -2px 8px rgba(0,200,224,.3); }
+#c4 .bars-days { display: flex; gap: 4px; margin-top: 4px; }
+#c4 .day-x { flex: 1; text-align: center; font-family: 'IBM Plex Mono', monospace; font-size: 7px; color: var(--text); letter-spacing: 1px; }
+
+/* ═══════════════════════════════════════════════
+   CONCEPT 5 – GLACIER LUXURY
+   Premium alpine brand: pelle, oro, neve
+═══════════════════════════════════════════════ */
+#c5 {
+  background: #F4F0EB;
+  --pearl:   #F4F0EB;
+  --cream:   #EDE8E1;
+  --navy:    #071B36;
+  --navy2:   #0D2B52;
+  --gold:    #AD8544;
+  --gold2:   #C9A05A;
+  --silver:  #8E9BAA;
+  --dark:    #2C3E50;
+  --text:    #4A5568;
+  --border:  rgba(7,27,54,.1);
+}
+
+#c5 .grain {
+  position: fixed; inset: 54px 0 0; pointer-events: none; z-index: 0; opacity: .55;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.12'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+}
+
+#c5 .season-bar {
+  background: var(--navy); padding: 7px 24px;
+  display: flex; justify-content: space-between; align-items: center;
+  position: relative; z-index: 2;
+}
+#c5 .season-txt { font-family: 'DM Sans', sans-serif; font-size: 10px; color: rgba(255,255,255,.5); letter-spacing: 2px; text-transform: uppercase; }
+#c5 .season-txt strong { color: var(--gold2); font-weight: 500; letter-spacing: 1px; }
+#c5 .season-mark { display: flex; gap: 6px; align-items: center; }
+#c5 .dot-mark { width: 4px; height: 4px; border-radius: 50%; background: var(--gold2); }
+
+#c5 header {
+  background: var(--pearl); padding: 24px 24px 20px;
+  border-bottom: 1px solid var(--border);
+  position: relative; z-index: 2;
+}
+#c5 .logo-area { display: flex; align-items: flex-start; justify-content: space-between; }
+#c5 .logo-group { display: flex; align-items: center; gap: 18px; }
+#c5 .logo-emblem {
+  width: 58px; height: 58px; border-radius: 50%;
+  border: 1.5px solid var(--gold); background: var(--cream);
+  display: flex; align-items: center; justify-content: center; font-size: 26px;
+  box-shadow: 0 2px 16px rgba(7,27,54,.08), inset 0 1px 0 rgba(255,255,255,.6);
+}
+#c5 h1 {
+  font-family: 'Cormorant Garant', serif; font-size: 24px; font-weight: 700;
+  color: var(--navy); letter-spacing: .5px; line-height: 1.15;
+}
+#c5 .sub {
+  font-family: 'DM Sans', sans-serif; font-size: 10px; color: var(--gold);
+  letter-spacing: 3px; text-transform: uppercase; margin-top: 4px; font-weight: 500;
+}
+#c5 .user-block { text-align: right; }
+#c5 .user-name { font-family: 'Cormorant Garant', serif; font-size: 15px; color: var(--navy); font-weight: 600; }
+#c5 .user-role { font-family: 'DM Sans', sans-serif; font-size: 10px; color: var(--silver); letter-spacing: 1px; text-transform: uppercase; margin-top: 2px; }
+#c5 .gold-line { height: 1px; background: linear-gradient(90deg, transparent, var(--gold), transparent); margin: 18px 0 0; opacity: .4; }
+
+#c5 .nav {
+  display: flex; border-bottom: 1px solid var(--border);
+  background: var(--pearl); position: relative; z-index: 2;
+  padding: 0 16px;
+}
+#c5 .nav-item {
+  padding: 14px 18px; font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500;
+  color: var(--silver); cursor: pointer; border-bottom: 1.5px solid transparent;
+  margin-bottom: -1px; transition: all .25s; letter-spacing: .5px;
+}
+#c5 .nav-item.a { color: var(--navy); border-bottom-color: var(--gold); }
+
+/* C5 Stats rings */
+#c5 .stats-rings {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+  padding: 24px 20px; position: relative; z-index: 2;
+}
+#c5 .ring-card {
+  background: #fff; border: 1px solid var(--border);
+  border-radius: 4px; padding: 20px 12px; text-align: center;
+  box-shadow: 0 2px 20px rgba(7,27,54,.06);
+  position: relative; overflow: hidden;
+}
+#c5 .ring-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--gold), var(--gold2), transparent);
+}
+#c5 .progress-ring-wrap { display: flex; justify-content: center; margin-bottom: 12px; }
+#c5 .progress-ring {
+  width: 72px; height: 72px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+}
+#c5 .progress-ring-bg {
+  position: absolute; inset: 0; border-radius: 50%;
+}
+#c5 .ring-inner {
+  position: absolute; inset: 9px; border-radius: 50%;
+  background: #fff; display: flex; align-items: center; justify-content: center;
+  flex-direction: column;
+}
+#c5 .ring-pct { font-family: 'Cormorant Garant', serif; font-size: 18px; font-weight: 700; color: var(--navy); line-height: 1; }
+#c5 .ring-pct-unit { font-family: 'DM Sans', sans-serif; font-size: 8px; color: var(--silver); letter-spacing: 1px; }
+#c5 .ring-val { font-family: 'Cormorant Garant', serif; font-size: 28px; font-weight: 700; color: var(--navy); line-height: 1; }
+#c5 .ring-unit { font-family: 'DM Sans', sans-serif; font-size: 10px; color: var(--gold); letter-spacing: 2px; text-transform: uppercase; margin-top: 2px; }
+#c5 .ring-label { font-family: 'DM Sans', sans-serif; font-size: 10px; color: var(--silver); margin-top: 6px; }
+
+/* C5 Card */
+#c5 .cards { padding: 0 20px 28px; display: grid; gap: 16px; position: relative; z-index: 2; }
+#c5 .card {
+  background: #fff; border: 1px solid var(--border);
+  border-radius: 4px; overflow: hidden;
+  box-shadow: 0 4px 32px rgba(7,27,54,.07);
+}
+#c5 .card-header {
+  padding: 18px 22px 14px;
+  border-bottom: 1px solid rgba(7,27,54,.06);
+  display: flex; align-items: flex-start; justify-content: space-between;
+}
+#c5 .card-eyebrow { font-family: 'DM Sans', sans-serif; font-size: 9px; color: var(--gold); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 4px; }
+#c5 .card-title { font-family: 'Cormorant Garant', serif; font-size: 20px; font-weight: 700; color: var(--navy); }
+#c5 .status-pill {
+  font-family: 'DM Sans', sans-serif; font-size: 9px; letter-spacing: 2px;
+  text-transform: uppercase; padding: 4px 12px; border: 1px solid rgba(173,133,68,.3);
+  color: var(--gold); border-radius: 100px;
+}
+#c5 .card-split { display: grid; grid-template-columns: 1fr 1fr; }
+#c5 .split-l { padding: 20px 22px; border-right: 1px solid rgba(7,27,54,.06); }
+#c5 .split-r { padding: 20px 22px; }
+#c5 .big-num { font-family: 'Cormorant Garant', serif; font-size: 52px; font-weight: 700; color: var(--navy); line-height: 1; }
+#c5 .big-unit { font-family: 'DM Sans', sans-serif; font-size: 11px; color: var(--gold); letter-spacing: 2px; text-transform: uppercase; margin-top: 2px; }
+#c5 .big-sub { font-family: 'DM Sans', sans-serif; font-size: 10px; color: var(--silver); margin-top: 8px; }
+#c5 .week-vis-label { font-family: 'DM Sans', sans-serif; font-size: 9px; color: var(--silver); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 12px; }
+#c5 .c5-bars { display: flex; gap: 4px; align-items: flex-end; height: 52px; }
+#c5 .c5-bar { flex: 1; border-radius: 2px; }
+#c5 .c5-days { display: flex; gap: 4px; margin-top: 6px; }
+#c5 .c5-day { flex: 1; text-align: center; font-family: 'DM Sans', sans-serif; font-size: 8px; color: var(--silver); }
+#c5 .card-footer {
+  padding: 12px 22px; background: #FAFAF8;
+  border-top: 1px solid rgba(7,27,54,.05);
+  display: flex; gap: 20px;
+}
+#c5 .footer-item { display: flex; flex-direction: column; }
+#c5 .f-label { font-family: 'DM Sans', sans-serif; font-size: 9px; color: var(--silver); letter-spacing: 1px; text-transform: uppercase; }
+#c5 .f-val { font-family: 'Cormorant Garant', serif; font-size: 16px; font-weight: 600; color: var(--navy); }
+
+/* CTA bar */
+.cta-bar { padding: 12px 16px; display: flex; gap: 8px; }
+.cta { flex: 1; padding: 12px; text-align: center; font-weight: 700; cursor: pointer; border: none; font-size: 13px; letter-spacing: 1px; text-transform: uppercase; }
+</style>
+</head>
+<body>
+
+<div class="selector">
+  <button class="sel-btn attivo" onclick="mostra(1, this)">① ALPINE</button>
+  <button class="sel-btn" onclick="mostra(2, this)">② NORDIC</button>
+  <button class="sel-btn" onclick="mostra(3, this)">③ RACING</button>
+  <button class="sel-btn" onclick="mostra(4, this)">④ AURORA GRID</button>
+  <button class="sel-btn" onclick="mostra(5, this)">⑤ GLACIER LUX</button>
+</div>
+
+<!-- ══════════════ CONCEPT 1 ══════════════ -->
+<div id="c1" class="concept attivo">
+  <header>
+    <div class="logo-area">
+      <div class="logo-sq">⛷</div>
+      <div>
+        <h1>WINTER SC SUBIACO</h1>
+        <div class="sub">● DIARIO DI ALLENAMENTO</div>
+      </div>
+    </div>
+  </header>
+  <div class="nav">
+    <div class="nav-item a">DIARIO</div>
+    <div class="nav-item">ATLETI</div>
+    <div class="nav-item">AVVISI</div>
+    <div class="nav-item">STAT.</div>
+  </div>
+  <div class="stats-row">
+    <div class="stat"><div class="stat-num">247</div><div class="stat-unit">km</div><div class="stat-label">Stagione</div></div>
+    <div class="stat"><div class="stat-num">89</div><div class="stat-unit">ore</div><div class="stat-label">Stagione</div></div>
+    <div class="stat"><div class="stat-num">9</div><div class="stat-unit">sett.</div><div class="stat-label">Completate</div></div>
+  </div>
+  <div class="cards">
+    <div class="card">
+      <div class="deco">❄</div>
+      <div class="card-head">
+        <div class="card-title">SETTIMANA 10</div>
+        <div class="badge">IN CORSO</div>
+      </div>
+      <div class="row"><span class="row-label">Km settimana</span><span class="row-val">34.5</span></div>
+      <div class="progress-bar"><div class="progress-fill" style="width:68%"></div></div>
+      <div class="row"><span class="row-label">Ore settimana</span><span class="row-val">12:30</span></div>
+      <div class="progress-bar"><div class="progress-fill" style="width:82%"></div></div>
+      <div class="row"><span class="row-label">RPE medio</span><span class="row-val">6.4</span></div>
+    </div>
+  </div>
+  <div class="cta-bar">
+    <button class="cta" style="background:#1A3A5C;color:#4DB6E8;font-family:'Rajdhani',sans-serif;">SALVA DIARIO</button>
+    <button class="cta" style="background:rgba(26,58,92,.08);color:#1A3A5C;border:1px solid rgba(26,58,92,.2);font-family:'Rajdhani',sans-serif;">ESPORTA</button>
+  </div>
+</div>
+
+<!-- ══════════════ CONCEPT 2 ══════════════ -->
+<div id="c2" class="concept">
+  <header>
+    <div class="logo-row">
+      <div class="logo-ring">⛷</div>
+      <div><h1>Winter SC Subiaco</h1><div class="sub">diario di allenamento</div></div>
+    </div>
+    <div class="user-chip"><div class="user-dot"></div>Marianna M. — Allenatrice</div>
+  </header>
+  <div class="nav">
+    <div class="nav-item a">Diario</div>
+    <div class="nav-item">Atleti</div>
+    <div class="nav-item">Avvisi</div>
+    <div class="nav-item">Statistiche</div>
+  </div>
+  <div class="stats-row">
+    <div class="stat"><div class="stat-num">247</div><div class="stat-unit">km</div><div class="stat-label">Stagione</div></div>
+    <div class="stat"><div class="stat-num">89</div><div class="stat-unit">ore</div><div class="stat-label">Stagione</div></div>
+    <div class="stat"><div class="stat-num">9</div><div class="stat-unit">sett.</div><div class="stat-label">Completate</div></div>
+  </div>
+  <div class="cards">
+    <div class="card">
+      <div class="card-title"><span>📋</span> Settimana 10</div>
+      <div class="row"><span class="row-label">Km settimana</span><span class="row-val">34.5</span></div>
+      <div class="row"><span class="row-label">Ore settimana</span><span class="row-val">12:30</span></div>
+      <div class="row"><span class="row-label">Stato</span><span class="pill">In corso</span></div>
+      <div class="week-bar">
+        <div class="day-bar" style="height:32px"></div>
+        <div class="day-bar" style="height:48px"></div>
+        <div class="day-bar" style="height:24px"></div>
+        <div class="day-bar a" style="height:60px"></div>
+        <div class="day-bar" style="height:0px"></div>
+        <div class="day-bar" style="height:0px"></div>
+        <div class="day-bar" style="height:0px"></div>
+      </div>
+      <div class="day-label">
+        <div class="day-lbl">L</div><div class="day-lbl">M</div><div class="day-lbl">M</div>
+        <div class="day-lbl">G</div><div class="day-lbl">V</div><div class="day-lbl">S</div><div class="day-lbl">D</div>
+      </div>
+    </div>
+  </div>
+  <div class="cta-bar">
+    <button class="cta" style="background:#C4912A;color:#0D1F0D;font-family:'Lora',serif;border-radius:6px;">Salva Diario</button>
+    <button class="cta" style="background:transparent;color:#C4912A;border:1px solid rgba(196,145,42,.3);font-family:'Lora',serif;border-radius:6px;">Esporta</button>
+  </div>
+</div>
+
+<!-- ══════════════ CONCEPT 3 ══════════════ -->
+<div id="c3" class="concept">
+  <header>
+    <div class="logo-row">
+      <div class="bib">WSC</div>
+      <div><h1>Winter SC<br>Subiaco</h1><div class="sub">// TRAINING LOG //</div></div>
+    </div>
+  </header>
+  <div class="race-bar">
+    <div class="race-stat"><div class="race-num">247</div><div class="race-lbl">KM / STAGIONE</div></div>
+    <div class="race-stat"><div class="race-num">89</div><div class="race-lbl">ORE / STAGIONE</div></div>
+    <div class="race-stat"><div class="race-num">09</div><div class="race-lbl">SETTIMANE</div></div>
+  </div>
+  <div class="nav">
+    <div class="nav-item a">DIARIO</div>
+    <div class="nav-item">ATLETI</div>
+    <div class="nav-item">AVVISI</div>
+    <div class="nav-item">STAT</div>
+  </div>
+  <div class="cards">
+    <div class="card">
+      <div class="card-stripe"></div>
+      <div class="card-body">
+        <div class="card-head">
+          <div><div class="card-num">#10</div><div class="card-title">SETTIMANA CORRENTE</div></div>
+          <div class="tag">LIVE</div>
+        </div>
+        <div class="row"><span class="row-label">KM totali</span><span class="row-val">34.5</span></div>
+        <div class="row"><span class="row-label">ORE totali</span><span class="row-val">12:30</span></div>
+        <div class="row"><span class="row-label">RPE medio</span><span class="row-val">6.4</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="cta-bar">
+    <button class="cta" style="background:#FFD700;color:#000;font-family:'Barlow Condensed',sans-serif;font-weight:900;">SALVA DIARIO</button>
+    <button class="cta" style="background:transparent;color:#FFD700;border:1px solid #333;font-family:'Barlow Condensed',sans-serif;font-weight:700;">ESPORTA</button>
+  </div>
+</div>
+
+<!-- ══════════════ CONCEPT 4 – AURORA GRID ══════════════ -->
+<div id="c4" class="concept">
+  <div class="grid-bg"></div>
+  <div class="aurora-blob"></div>
+  <div class="aurora-blob2"></div>
+  <div class="scanlines"></div>
+
+  <div class="status-bar">
+    <div class="status-left">
+      <div class="live-dot"></div>
+      <div class="status-txt">SISTEMA <em>ATTIVO</em> &nbsp;|&nbsp; STAGIONE 2025–26</div>
+    </div>
+    <div class="status-time">WK·10 &nbsp;|&nbsp; MAR 05/05</div>
+  </div>
+
+  <header>
+    <div class="logo-area">
+      <div class="logo-hex">⛷</div>
+      <div class="logo-txt">
+        <h1>WINTER SC<br>SUBIACO</h1>
+        <div class="sub">▸ TRAINING SYSTEM v2.6</div>
+      </div>
+      <div class="user-tag">
+        <div><div class="user-tag-lbl">OPERATORE</div><div class="user-tag-val">MARIANNA M.</div></div>
+      </div>
+    </div>
+    <div class="corner-deco">WSC</div>
+  </header>
+
+  <div class="nav">
+    <div class="nav-item a">DIARIO</div>
+    <div class="nav-item">ATLETI</div>
+    <div class="nav-item">AVVISI</div>
+    <div class="nav-item">ANALISI</div>
+  </div>
+
+  <div class="stats-strip">
+    <div class="stat-box" data-label="STAGIONE">
+      <div class="stat-num">247<em>km</em></div>
+      <div class="stat-bar"><div class="stat-fill" style="width:62%"></div></div>
+      <div class="stat-sub">↑ +18 vs sett. prec.</div>
+    </div>
+    <div class="stat-box" data-label="STAGIONE">
+      <div class="stat-num">89<em>h</em></div>
+      <div class="stat-bar"><div class="stat-fill" style="width:74%"></div></div>
+      <div class="stat-sub">↑ +6.5 vs sett. prec.</div>
+    </div>
+    <div class="stat-box" data-label="SETTIMANE">
+      <div class="stat-num">10<em>wk</em></div>
+      <div class="stat-bar"><div class="stat-fill" style="width:40%"></div></div>
+      <div class="stat-sub">40% stagione</div>
+    </div>
+    <div class="stat-box" data-label="RPE MEDIO">
+      <div class="stat-num">6.4<em></em></div>
+      <div class="stat-bar"><div class="stat-fill" style="width:64%"></div></div>
+      <div class="stat-sub">Carico moderato</div>
+    </div>
+  </div>
+
+  <div class="cards">
+    <div class="card">
+      <div class="card-corner tl"></div><div class="card-corner tr"></div>
+      <div class="card-corner bl"></div><div class="card-corner br"></div>
+      <div class="card-head">
+        <div>
+          <div class="card-id">REC·2026·W10</div>
+          <div class="card-title">Settimana corrente</div>
+        </div>
+        <div class="status-badge">● IN CORSO</div>
+      </div>
+      <div class="data-grid">
+        <div class="data-cell">
+          <div class="data-lbl">Km totali</div>
+          <div class="data-val">34<small>.5 km</small></div>
+          <div class="data-delta delta-up">▲ +4.5 vs settimana 9</div>
+        </div>
+        <div class="data-cell">
+          <div class="data-lbl">Ore totali</div>
+          <div class="data-val">12<small>:30 h</small></div>
+          <div class="data-delta delta-up">▲ +1:15 vs settimana 9</div>
+        </div>
+        <div class="data-cell">
+          <div class="data-lbl">RPE medio</div>
+          <div class="data-val">6.4<small>/10</small></div>
+          <div class="data-delta delta-dn">▼ −0.3 vs settimana 9</div>
+        </div>
+        <div class="data-cell">
+          <div class="data-lbl">Sessioni</div>
+          <div class="data-val">4<small> allenamenti</small></div>
+          <div class="data-delta" style="color:#7A9BB8">3 giorni rimasti</div>
+        </div>
+      </div>
+      <div class="week-vis">
+        <div class="week-vis-lbl">DISTRIBUZIONE SETTIMANALE ▸ KM</div>
+        <div class="bars-row">
+          <div class="c4-bar" style="height:55%"></div>
+          <div class="c4-bar" style="height:80%"></div>
+          <div class="c4-bar" style="height:40%"></div>
+          <div class="c4-bar active" style="height:100%"></div>
+          <div class="c4-bar" style="height:0%"></div>
+          <div class="c4-bar" style="height:0%"></div>
+          <div class="c4-bar" style="height:0%"></div>
+        </div>
+        <div class="bars-days">
+          <div class="day-x">LUN</div><div class="day-x">MAR</div><div class="day-x">MER</div>
+          <div class="day-x">GIO</div><div class="day-x">VEN</div><div class="day-x">SAB</div><div class="day-x">DOM</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cta-bar">
+    <button class="cta" style="background:rgba(0,200,224,.12);color:#00C8E0;border:1px solid rgba(0,200,224,.3);font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:2px;">▸ SALVA REGISTRO</button>
+    <button class="cta" style="background:transparent;color:#7A9BB8;border:1px solid rgba(0,200,224,.15);font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:2px;">ESPORTA XLS</button>
+  </div>
+</div>
+
+<!-- ══════════════ CONCEPT 5 – GLACIER LUXURY ══════════════ -->
+<div id="c5" class="concept">
+  <div class="grain"></div>
+
+  <div class="season-bar">
+    <div class="season-txt">Stagione <strong>2025–26</strong> &nbsp;·&nbsp; Settimana 10 di 25</div>
+    <div class="season-mark"><div class="dot-mark"></div><div class="season-txt"><strong>Attiva</strong></div></div>
+  </div>
+
+  <header>
+    <div class="logo-area">
+      <div class="logo-group">
+        <div class="logo-emblem">⛷</div>
+        <div>
+          <h1>Winter SC Subiaco</h1>
+          <div class="sub">Diario di allenamento</div>
+        </div>
+      </div>
+      <div class="user-block">
+        <div class="user-name">Marianna M.</div>
+        <div class="user-role">Allenatrice</div>
+      </div>
+    </div>
+    <div class="gold-line"></div>
+  </header>
+
+  <div class="nav">
+    <div class="nav-item a">Diario</div>
+    <div class="nav-item">Atleti</div>
+    <div class="nav-item">Avvisi</div>
+    <div class="nav-item">Statistiche</div>
+  </div>
+
+  <div class="stats-rings">
+    <div class="ring-card">
+      <div class="progress-ring-wrap">
+        <div class="progress-ring">
+          <div class="progress-ring-bg" style="background: conic-gradient(#AD8544 0% 62%, #EDE8E1 62% 100%);"></div>
+          <div class="ring-inner">
+            <div class="ring-pct">62<span style="font-size:10px">%</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="ring-val">247</div>
+      <div class="ring-unit">km</div>
+      <div class="ring-label">Stagione</div>
+    </div>
+    <div class="ring-card">
+      <div class="progress-ring-wrap">
+        <div class="progress-ring">
+          <div class="progress-ring-bg" style="background: conic-gradient(#AD8544 0% 74%, #EDE8E1 74% 100%);"></div>
+          <div class="ring-inner">
+            <div class="ring-pct">74<span style="font-size:10px">%</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="ring-val">89</div>
+      <div class="ring-unit">ore</div>
+      <div class="ring-label">Stagione</div>
+    </div>
+    <div class="ring-card">
+      <div class="progress-ring-wrap">
+        <div class="progress-ring">
+          <div class="progress-ring-bg" style="background: conic-gradient(#AD8544 0% 40%, #EDE8E1 40% 100%);"></div>
+          <div class="ring-inner">
+            <div class="ring-pct">40<span style="font-size:10px">%</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="ring-val">10</div>
+      <div class="ring-unit">sett.</div>
+      <div class="ring-label">Completate</div>
+    </div>
+  </div>
+
+  <div class="cards">
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-eyebrow">Settimana corrente</div>
+          <div class="card-title">Settimana 10</div>
+        </div>
+        <div class="status-pill">In corso</div>
+      </div>
+      <div class="card-split">
+        <div class="split-l">
+          <div class="big-num">34.5</div>
+          <div class="big-unit">km</div>
+          <div class="big-sub">+4.5 km rispetto<br>alla settimana scorsa</div>
+        </div>
+        <div class="split-r">
+          <div class="week-vis-label">Attività giornaliera</div>
+          <div class="c5-bars">
+            <div class="c5-bar" style="height:55%;background:#EDE8E1;border-top:2px solid #AD8544;"></div>
+            <div class="c5-bar" style="height:80%;background:#EDE8E1;border-top:2px solid #AD8544;"></div>
+            <div class="c5-bar" style="height:38%;background:#EDE8E1;border-top:2px solid #AD8544;"></div>
+            <div class="c5-bar" style="height:100%;background:#D4A86A;border-top:2px solid #8B6030;"></div>
+            <div class="c5-bar" style="height:4%;background:#EDE8E1;border-top:2px solid #E8E0D8;"></div>
+            <div class="c5-bar" style="height:4%;background:#EDE8E1;border-top:2px solid #E8E0D8;"></div>
+            <div class="c5-bar" style="height:4%;background:#EDE8E1;border-top:2px solid #E8E0D8;"></div>
+          </div>
+          <div class="c5-days">
+            <div class="c5-day">Lun</div><div class="c5-day">Mar</div><div class="c5-day">Mer</div>
+            <div class="c5-day">Gio</div><div class="c5-day">Ven</div><div class="c5-day">Sab</div><div class="c5-day">Dom</div>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <div class="footer-item"><div class="f-label">Ore</div><div class="f-val">12:30</div></div>
+        <div class="footer-item"><div class="f-label">RPE medio</div><div class="f-val">6.4</div></div>
+        <div class="footer-item"><div class="f-label">Sessioni</div><div class="f-val">4</div></div>
+        <div class="footer-item"><div class="f-label">Giorni rimasti</div><div class="f-val">3</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cta-bar" style="padding-bottom:24px;">
+    <button class="cta" style="background:#071B36;color:#F4F0EB;font-family:'DM Sans',sans-serif;font-weight:600;font-size:12px;letter-spacing:2px;border-radius:2px;">SALVA DIARIO</button>
+    <button class="cta" style="background:transparent;color:#071B36;border:1px solid rgba(7,27,54,.2);font-family:'DM Sans',sans-serif;font-weight:500;font-size:12px;letter-spacing:1px;border-radius:2px;">Esporta Excel</button>
+  </div>
+</div>
+
+<script>
+function mostra(n, btn) {
+  document.querySelectorAll('.concept').forEach(c => c.classList.remove('attivo'));
+  document.querySelectorAll('.sel-btn').forEach(b => b.classList.remove('attivo'));
+  document.getElementById('c' + n).classList.add('attivo');
+  btn.classList.add('attivo');
+}
+</script>
+</body>
+</html>
