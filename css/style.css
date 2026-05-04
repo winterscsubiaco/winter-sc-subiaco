@@ -387,8 +387,14 @@ body::after {
   background: linear-gradient(135deg, #122A45, #0B1628);
   clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
 }
-/* L'emoji sopra tutto */
-.logo-hex .lh-icon { position: relative; z-index: 1; line-height: 1; }
+/* Logo vero del club dentro l'esagono */
+.logo-hex .lh-icon {
+  position: relative; z-index: 1;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+}
 
 /* Testo header */
 .header-txt-wrap {
@@ -396,13 +402,13 @@ body::after {
   overflow: hidden;
 }
 
-/* Titolo animato ghiaccio */
+/* Titolo animato ghiaccio (su 2 righe come preview) */
 .header-title {
   font-family: 'Russo One', sans-serif;
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 400;
   letter-spacing: 3px;
-  line-height: 1.1;
+  line-height: 0.95;
   text-transform: uppercase;
   background: linear-gradient(90deg,
     #4A9EC0 0%,
@@ -526,12 +532,29 @@ body::after {
 /* ---- SCHEDA ---- */
 .scheda {
   background: var(--panel);
-  border-radius: var(--raggio);
+  border-radius: 0;
   box-shadow: var(--ombra);
-  overflow: hidden;
   margin-bottom: 18px;
   border: 1px solid var(--cyan-border);
   border-top: none;
+  position: relative;
+}
+/* Corner brackets in alto-sx e basso-dx */
+.scheda::before {
+  content: ''; position: absolute;
+  top: 4px; left: 4px;
+  width: 11px; height: 11px;
+  border-top: 1px solid var(--cyan);
+  border-left: 1px solid var(--cyan);
+  pointer-events: none; z-index: 3;
+}
+.scheda::after {
+  content: ''; position: absolute;
+  bottom: 4px; right: 4px;
+  width: 11px; height: 11px;
+  border-bottom: 1px solid var(--cyan);
+  border-right: 1px solid var(--cyan);
+  pointer-events: none; z-index: 3;
 }
 
 .scheda-titolo {
@@ -749,60 +772,90 @@ body::after {
 
 .stat-card {
   background: var(--panel);
-  border-radius: var(--raggio);
-  padding: 24px 20px;
+  border-radius: 0;
+  padding: 28px 18px 18px;
   text-align: center;
   box-shadow: var(--ombra);
   border: 1px solid var(--cyan-border);
-  border-top: 2px solid var(--cyan);
   position: relative;
   overflow: hidden;
 }
 
+/* Label "GRUPPO" in alto a sinistra (stile preview) */
 .stat-card::before {
-  content: '';
-  position: absolute; top: 0; left: 0; right: 0; height: 2px;
-  background: var(--cyan);
-  box-shadow: 0 0 10px rgba(0,200,224,.5);
+  content: 'GRUPPO · 2025-26';
+  position: absolute;
+  top: 8px; left: 12px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 8px; letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-sec); opacity: .7;
 }
 
+/* Indicatore circolare in alto a destra */
 .stat-card::after {
-  content: '';
+  content: '◆';
   position: absolute;
-  bottom: -28px; right: -28px;
-  width: 80px; height: 80px;
-  background: radial-gradient(circle, rgba(0,200,224,.12), transparent);
-  border-radius: 50%;
+  top: 7px; right: 12px;
+  font-size: 9px;
+  color: var(--cyan); opacity: .6;
 }
 
 .stat-card .numero {
   font-family: 'Russo One', sans-serif;
-  font-size: 44px;
+  font-size: 48px;
   font-weight: 400;
   color: var(--ice);
   line-height: 1;
   position: relative; z-index: 1;
-  text-shadow: 0 0 20px rgba(0,200,224,.2);
+  text-shadow: 0 0 24px rgba(0,200,224,.3);
 }
 
 .stat-card .etichetta {
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 700;
-  color: var(--text-sec);
-  margin-top: 6px;
+  color: var(--cyan);
+  margin-top: 8px;
   text-transform: uppercase;
-  letter-spacing: 2px;
+  letter-spacing: 3px;
   position: relative; z-index: 1;
+}
+
+/* Barra progressiva in basso (decorativa) */
+.stat-card .etichetta::after {
+  content: '';
+  display: block;
+  width: 60%;
+  height: 2px;
+  margin: 10px auto 0;
+  background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+  box-shadow: 0 0 6px rgba(0,200,224,.5);
 }
 
 /* Lista atleti */
 .lista-atleti {
   background: var(--panel);
-  border-radius: var(--raggio);
+  border-radius: 0;
   box-shadow: var(--ombra);
-  overflow: hidden;
   border: 1px solid var(--cyan-border);
   border-top: none;
+  position: relative;
+}
+.lista-atleti::before {
+  content: ''; position: absolute;
+  top: 4px; left: 4px;
+  width: 11px; height: 11px;
+  border-top: 1px solid var(--cyan);
+  border-left: 1px solid var(--cyan);
+  pointer-events: none; z-index: 3;
+}
+.lista-atleti::after {
+  content: ''; position: absolute;
+  bottom: 4px; right: 4px;
+  width: 11px; height: 11px;
+  border-bottom: 1px solid var(--cyan);
+  border-right: 1px solid var(--cyan);
+  pointer-events: none; z-index: 3;
 }
 
 .lista-intestazione {
@@ -893,12 +946,28 @@ body::after {
 /* Crea atleta form */
 .crea-atleta-form {
   background: var(--panel);
-  border-radius: var(--raggio);
+  border-radius: 0;
   box-shadow: var(--ombra);
-  overflow: hidden;
   margin-bottom: 20px;
   border: 1px solid var(--cyan-border);
   border-top: none;
+  position: relative;
+}
+.crea-atleta-form::before {
+  content: ''; position: absolute;
+  top: 4px; left: 4px;
+  width: 11px; height: 11px;
+  border-top: 1px solid var(--cyan);
+  border-left: 1px solid var(--cyan);
+  pointer-events: none; z-index: 3;
+}
+.crea-atleta-form::after {
+  content: ''; position: absolute;
+  bottom: 4px; right: 4px;
+  width: 11px; height: 11px;
+  border-bottom: 1px solid var(--cyan);
+  border-right: 1px solid var(--cyan);
+  pointer-events: none; z-index: 3;
 }
 
 .crea-atleta-body {
