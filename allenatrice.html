@@ -12,17 +12,37 @@
 </head>
 <body>
 
-  <!-- HEADER -->
-  <header class="intestazione">
-    <div class="intestazione-sx">
-      <img src="icon-192.png" class="logo-header" alt="">
-      <div>
-        <h1>Winter SC Subiaco</h1>
-        <div class="utente">Allenatrice: <strong id="nomeAllenatrice">...</strong></div>
+  <!-- SITE HEADER -->
+  <div class="site-header">
+    <div class="status-bar">
+      <div class="status-left">
+        <div class="live-dot"></div>
+        <span class="status-txt">SISTEMA <em>ONLINE</em> &nbsp;·&nbsp; STAGIONE 2025–26</span>
       </div>
+      <span class="status-time" id="statusTime"></span>
     </div>
-    <button class="btn-logout" id="btnEsci">Esci</button>
-  </header>
+    <header class="intestazione">
+      <div class="header-snow">
+        <span class="sf sf1">❄</span><span class="sf sf2">❄</span>
+        <span class="sf sf3">❄</span><span class="sf sf4">❄</span>
+        <span class="sf sf5">❄</span><span class="sf sf6">❄</span>
+      </div>
+      <div class="intestazione-sx">
+        <div class="logo-hex">⛷</div>
+        <div class="header-txt-wrap">
+          <h1 class="header-title">WINTER SC SUBIACO</h1>
+          <div class="header-sub">▸ DASHBOARD ALLENATRICE</div>
+        </div>
+      </div>
+      <div class="header-dx">
+        <div class="user-info-tag">
+          <span class="user-role-lbl">ALLENATRICE</span>
+          <strong class="user-name-val" id="nomeAllenatrice">...</strong>
+        </div>
+        <button class="btn-logout" id="btnEsci">Esci</button>
+      </div>
+    </header>
+  </div>
 
   <main class="contenuto">
 
@@ -233,5 +253,20 @@
   <script src="js/config.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/allenatrice.js"></script>
+  <script>
+    (function() {
+      function aggiornaStatusTime() {
+        const now = new Date();
+        const start = new Date('2025-10-06');
+        const wk = Math.max(1, Math.ceil((now - start) / (7*24*60*60*1000)));
+        const gg = ['DOM','LUN','MAR','MER','GIO','VEN','SAB'];
+        const mm = ['GEN','FEB','MAR','APR','MAG','GIU','LUG','AGO','SET','OTT','NOV','DIC'];
+        const el = document.getElementById('statusTime');
+        if (el) el.textContent = 'WK·' + String(wk).padStart(2,'0') + ' · ' + gg[now.getDay()] + ' ' + String(now.getDate()).padStart(2,'0') + '/' + mm[now.getMonth()];
+      }
+      aggiornaStatusTime();
+      setInterval(aggiornaStatusTime, 60000);
+    })();
+  </script>
 </body>
 </html>

@@ -52,6 +52,34 @@
   66%       { opacity: 0.8; transform: scale(.97)  rotate(-1deg); }
 }
 
+@keyframes frostShimmer {
+  0%   { background-position: -280% center; }
+  100% { background-position: 280% center; }
+}
+
+@keyframes iceGlow {
+  0%, 100% { filter: drop-shadow(0 0 6px rgba(0,200,224,.5)) drop-shadow(0 0 16px rgba(0,200,224,.2)); }
+  50%       { filter: drop-shadow(0 0 12px rgba(0,255,255,.7)) drop-shadow(0 0 28px rgba(0,200,224,.4)); }
+}
+
+@keyframes snowFall {
+  0%   { transform: translateY(-8px)  translateX(0px)   rotate(0deg);   opacity: 0; }
+  12%  { opacity: 0.8; }
+  88%  { opacity: 0.4; }
+  100% { transform: translateY(72px)  translateX(14px)  rotate(200deg); opacity: 0; }
+}
+@keyframes snowFall2 {
+  0%   { transform: translateY(-8px)  translateX(0px)   rotate(0deg);   opacity: 0; }
+  12%  { opacity: 0.7; }
+  88%  { opacity: 0.3; }
+  100% { transform: translateY(72px)  translateX(-10px) rotate(-180deg); opacity: 0; }
+}
+
+@keyframes blinkDot {
+  0%, 100% { opacity: 1; box-shadow: 0 0 6px var(--cyan); }
+  50%       { opacity: 0.15; box-shadow: none; }
+}
+
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
@@ -259,6 +287,45 @@ body {
 
 .nascosto { display: none !important; }
 
+/* ---- SITE HEADER WRAPPER (sticky) ---- */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+/* ---- STATUS BAR ---- */
+.status-bar {
+  background: var(--void);
+  border-bottom: 1px solid rgba(0,200,224,.12);
+  padding: 5px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.status-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.live-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--cyan);
+  animation: blinkDot 1.4s ease-in-out infinite;
+  flex-shrink: 0;
+}
+.status-txt {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px; color: var(--text-sec);
+  letter-spacing: 2px; text-transform: uppercase;
+}
+.status-txt em { font-style: normal; color: var(--cyan); }
+.status-time {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px; color: var(--text-sec);
+  letter-spacing: 1.5px; text-transform: uppercase;
+}
+
 /* ---- HEADER APP ---- */
 .intestazione {
   background: linear-gradient(180deg, #0D2040 0%, var(--deep) 100%);
@@ -267,11 +334,99 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  position: sticky;
-  top: 0;
-  z-index: 100;
+  overflow: hidden;
+  position: relative;
   border-bottom: 1px solid var(--cyan-border);
   box-shadow: 0 0 0 1px rgba(0,200,224,.06), 0 4px 32px rgba(0,0,0,0.8);
+}
+
+/* Logo esagonale */
+.logo-hex {
+  width: 52px; height: 52px;
+  background: var(--panel);
+  border: 1.5px solid var(--cyan);
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; flex-shrink: 0;
+  box-shadow: 0 0 18px rgba(0,200,224,.25);
+}
+
+/* Testo header */
+.header-txt-wrap {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Titolo animato ghiaccio */
+.header-title {
+  font-family: 'Russo One', sans-serif;
+  font-size: 24px;
+  font-weight: 400;
+  letter-spacing: 3px;
+  line-height: 1.1;
+  text-transform: uppercase;
+  background: linear-gradient(90deg,
+    #4A9EC0 0%,
+    #A8DCF0 12%,
+    #FFFFFF 25%,
+    #E8F8FF 38%,
+    #00FFF7 50%,
+    #E8F8FF 62%,
+    #FFFFFF 72%,
+    #A8DCF0 85%,
+    #4A9EC0 100%
+  );
+  background-size: 260% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: frostShimmer 5s linear infinite, iceGlow 3s ease-in-out infinite;
+}
+
+.header-sub {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px; letter-spacing: 3px;
+  color: var(--cyan); text-transform: uppercase;
+  margin-top: 4px; opacity: .85;
+}
+
+/* Fiocchi di neve nel header */
+.header-snow {
+  position: absolute; inset: 0;
+  pointer-events: none; overflow: hidden;
+}
+.sf {
+  position: absolute; top: 0;
+  color: rgba(200,238,248,.55);
+  animation: snowFall linear infinite;
+}
+.sf:nth-child(even) { animation-name: snowFall2; }
+.sf1 { left: 4%;  font-size: 9px;  animation-duration: 3.2s; animation-delay: 0s;    }
+.sf2 { left: 18%; font-size: 11px; animation-duration: 4.8s; animation-delay: 1.1s; }
+.sf3 { left: 38%; font-size: 7px;  animation-duration: 3.6s; animation-delay: 0.6s; }
+.sf4 { left: 58%; font-size: 10px; animation-duration: 5.2s; animation-delay: 2.0s; }
+.sf5 { left: 74%; font-size: 8px;  animation-duration: 4.1s; animation-delay: 0.3s; }
+.sf6 { left: 88%; font-size: 9px;  animation-duration: 3.8s; animation-delay: 1.7s; }
+
+/* User tag nell'header */
+.user-info-tag {
+  background: rgba(0,200,224,.06);
+  border: 1px solid var(--cyan-border);
+  padding: 5px 12px;
+  display: flex; flex-direction: column; gap: 2px;
+}
+.user-role-lbl {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 8px; letter-spacing: 2px;
+  color: var(--text-sec); text-transform: uppercase;
+}
+.user-name-val {
+  font-family: 'Russo One', sans-serif;
+  font-size: 12px; letter-spacing: 1px;
+  color: var(--cyan);
+}
+.header-dx {
+  display: flex; align-items: center; gap: 12px;
 }
 
 .intestazione-sx {
@@ -1071,9 +1226,14 @@ body {
   .login-logo .logo-img { width: 80px; height: 80px; }
   .login-logo h1 { font-size: 14px; }
 
+  .status-bar { padding: 4px 12px; }
+  .status-txt { font-size: 8px; letter-spacing: 1px; }
+
   .intestazione { padding: 8px 14px; }
-  .logo-header { width: 32px; height: 32px; }
-  .intestazione-sx h1 { font-size: 12px; }
+  .logo-hex { width: 40px; height: 40px; font-size: 17px; }
+  .header-title { font-size: 18px; letter-spacing: 2px; }
+  .header-sub { font-size: 8px; letter-spacing: 2px; }
+  .user-info-tag { display: none; }
 
   .selettore-settimana {
     display: grid;
