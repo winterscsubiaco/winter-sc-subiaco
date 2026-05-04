@@ -538,6 +538,7 @@ body::after {
   border: 1px solid var(--cyan-border);
   border-top: none;
   position: relative;
+  overflow: hidden;
 }
 /* Corner brackets in alto-sx e basso-dx */
 .scheda::before {
@@ -1203,11 +1204,18 @@ body::after {
   border-color: var(--cyan);
 }
 .stat-tab-content { padding: 16px; }
-.charts-grid-2    { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.charts-grid-2    {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+  min-width: 0;
+}
+.charts-grid-2 > * { min-width: 0; }
 .chart-box {
   background: var(--deep); border-radius: var(--raggio);
   padding: 14px; border: 1px solid var(--cyan-border);
+  min-width: 0; max-width: 100%;
+  overflow: hidden;
 }
+.chart-box canvas { max-width: 100% !important; height: auto !important; }
 .chart-titolo {
   font-family: 'IBM Plex Mono', monospace;
   font-size: 11px; font-weight: 700; letter-spacing: 2px;
@@ -1361,6 +1369,15 @@ body::after {
     font-family: 'IBM Plex Mono', monospace;
     font-weight: 400;
   }
+
+  /* Riga atleta: nascondo badge ATTIVO su mobile per evitare sbordo */
+  .atleta-riga { padding: 10px 14px; gap: 6px; }
+  .atleta-riga .badge-verde { display: none; }
+  .atleta-riga .btn-edit-email { font-size: 14px; padding: 2px; }
+
+  /* Card statistiche: padding ridotto per dare spazio ai grafici */
+  .stat-tab-content { padding: 10px; }
+  .chart-box { padding: 10px; }
 
   .selettore-settimana {
     display: grid;
