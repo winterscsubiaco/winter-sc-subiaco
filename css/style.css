@@ -1325,14 +1325,42 @@ body::after {
   .login-logo .logo-img { width: 80px; height: 80px; }
   .login-logo h1 { font-size: 14px; }
 
-  .status-bar { padding: 4px 12px; }
-  .status-txt { font-size: 8px; letter-spacing: 1px; }
+  /* Status bar compatta */
+  .status-bar { padding: 4px 10px; }
+  .status-txt, .status-time {
+    font-size: 8px; letter-spacing: 1px;
+    white-space: nowrap;
+  }
+  .status-txt-extra { display: none; }
 
-  .intestazione { padding: 8px 14px; }
-  .logo-hex { width: 40px; height: 40px; font-size: 17px; }
-  .header-title { font-size: 18px; letter-spacing: 2px; }
+  /* Header compatto */
+  .intestazione { padding: 8px 12px; gap: 8px; }
+  .intestazione-sx { gap: 10px; flex: 1; min-width: 0; }
+  .logo-hex { width: 42px; height: 42px; }
+  .logo-hex .lh-icon { width: 28px; height: 28px; }
+  .header-title { font-size: 17px; letter-spacing: 2px; }
   .header-sub { font-size: 8px; letter-spacing: 2px; }
+  .header-txt-wrap { min-width: 0; }
   .user-info-tag { display: none; }
+  .header-dx { gap: 8px; }
+
+  /* Meno fiocchi su mobile */
+  .sf4, .sf5, .sf6 { display: none; }
+
+  /* Lista intestazione: stack verticale per evitare sovrapposizioni */
+  .lista-intestazione {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    padding: 11px 16px;
+  }
+  .lista-intestazione > span:last-child {
+    font-size: 10px !important;
+    text-transform: none !important;
+    letter-spacing: .5px !important;
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 400;
+  }
 
   .selettore-settimana {
     display: grid;
