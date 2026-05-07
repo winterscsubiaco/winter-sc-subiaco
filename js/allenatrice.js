@@ -755,6 +755,26 @@ function creaChart(id, config) {
   chartInstances[id] = new Chart(ctx, config);
 }
 
+// Rende il chart-box scrollabile orizzontalmente e calcola larghezza canvas
+// in base al numero di etichette, così su mobile si vedono tutti gli atleti
+function preparaChartScrollabile(id, labels) {
+  const canvas = document.getElementById(id);
+  if (!canvas) return;
+  const box = canvas.closest('.chart-box');
+  if (box) {
+    box.style.overflowX = 'auto';
+    box.style.overflowY = 'hidden';
+    box.style.webkitOverflowScrolling = 'touch';
+  }
+  const perAtleta = 65; // pixel per barra
+  const boxW = box ? Math.max(box.clientWidth - 28, 0) : 280;
+  const w = Math.max(labels.length * perAtleta, boxW);
+  canvas.style.width  = w + 'px';
+  canvas.style.height = '220px';
+  canvas.style.maxWidth = 'none';
+  canvas.style.display  = 'block';
+}
+
 function switchStatTab(tab, btn) {
   document.querySelectorAll('.stats-tab').forEach(b => b.classList.remove('attivo'));
   btn.classList.add('attivo');
@@ -827,16 +847,18 @@ async function caricaStatGruppo() {
     return setts.length ? setts[setts.length - 1].ore : 0;
   });
 
+  preparaChartScrollabile('chartKmSettimana', labels);
   creaChart('chartKmSettimana', {
     type: 'bar',
     data: { labels, datasets: [{ label: 'Km', data: kmUltima, backgroundColor: COLORI_ATLETI }] },
-    options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+    options: { responsive: false, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
   });
 
+  preparaChartScrollabile('chartOreSettimana', labels);
   creaChart('chartOreSettimana', {
     type: 'bar',
     data: { labels, datasets: [{ label: 'Ore', data: oreUltima, backgroundColor: COLORI_ATLETI }] },
-    options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+    options: { responsive: false, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
   });
 
   // Stagione: totali
