@@ -775,7 +775,7 @@ function preparaChartScrollabile(id, labels) {
     canvas.parentNode.insertBefore(inner, canvas);
     inner.appendChild(canvas);
   }
-  inner.style.minWidth = (labels.length * 65) + 'px';
+  inner.style.minWidth = (labels.length * 40) + 'px';
   box.style.overflowX = 'auto';
   box.style.overflowY = 'hidden';
   return true;
@@ -856,14 +856,14 @@ async function caricaStatGruppo() {
   const scrollKm = preparaChartScrollabile('chartKmSettimana', labels);
   creaChart('chartKmSettimana', {
     type: 'bar',
-    data: { labels, datasets: [{ label: 'Km', data: kmUltima, backgroundColor: COLORI_ATLETI }] },
+    data: { labels, datasets: [{ label: 'Km', data: kmUltima, backgroundColor: COLORI_ATLETI, maxBarThickness: 28 }] },
     options: { responsive: true, maintainAspectRatio: !scrollKm, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
   });
 
   const scrollOre = preparaChartScrollabile('chartOreSettimana', labels);
   creaChart('chartOreSettimana', {
     type: 'bar',
-    data: { labels, datasets: [{ label: 'Ore', data: oreUltima, backgroundColor: COLORI_ATLETI }] },
+    data: { labels, datasets: [{ label: 'Ore', data: oreUltima, backgroundColor: COLORI_ATLETI, maxBarThickness: 28 }] },
     options: { responsive: true, maintainAspectRatio: !scrollOre, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
   });
 
