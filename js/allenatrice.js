@@ -755,24 +755,30 @@ function creaChart(id, config) {
   chartInstances[id] = new Chart(ctx, config);
 }
 
-// Rende il chart-box scrollabile orizzontalmente e calcola larghezza canvas
-// in base al numero di etichette, così su mobile si vedono tutti gli atleti
+// Su mobile: crea un wrapper interno con min-width e rende il chart-box scrollabile.
+// Su desktop: non fa nulla (Chart.js rimane responsive e riempie il contenitore).
+// Restituisce true se è stato attivato lo scroll (serve per maintainAspectRatio).
 function preparaChartScrollabile(id, labels) {
   const canvas = document.getElementById(id);
-  if (!canvas) return;
+  if (!canvas) return false;
   const box = canvas.closest('.chart-box');
-  if (box) {
-    box.style.overflowX = 'auto';
-    box.style.overflowY = 'hidden';
-    box.style.webkitOverflowScrolling = 'touch';
+  if (!box) return false;
+
+  if (window.innerWidth > 768) return false; // desktop: comportamento originale
+
+  // Mobile: wrapper interno con min-width = atleti × 65px
+  let inner = canvas.parentElement;
+  if (!inner.dataset.chartInner) {
+    inner = document.createElement('div');
+    inner.dataset.chartInner = '1';
+    inner.style.cssText = 'position:relative; height:220px;';
+    canvas.parentNode.insertBefore(inner, canvas);
+    inner.appendChild(canvas);
   }
-  const perAtleta = 65; // pixel per barra
-  const boxW = box ? Math.max(box.clientWidth - 28, 0) : 280;
-  const w = Math.max(labels.length * perAtleta, boxW);
-  canvas.style.width  = w + 'px';
-  canvas.style.height = '220px';
-  canvas.style.maxWidth = 'none';
-  canvas.style.display  = 'block';
+  inner.style.minWidth = (labels.length * 65) + 'px';
+  box.style.overflowX = 'auto';
+  box.style.overflowY = 'hidden';
+  return true;
 }
 
 function switchStatTab(tab, btn) {
@@ -847,18 +853,18 @@ async function caricaStatGruppo() {
     return setts.length ? setts[setts.length - 1].ore : 0;
   });
 
-  preparaChartScrollabile('chartKmSettimana', labels);
+  const scrollKm = preparaChartScrollabile('chartKmSettimana', labels);
   creaChart('chartKmSettimana', {
     type: 'bar',
     data: { labels, datasets: [{ label: 'Km', data: kmUltima, backgroundColor: COLORI_ATLETI }] },
-    options: { responsive: false, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+    options: { responsive: true, maintainAspectRatio: !scrollKm, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
   });
 
-  preparaChartScrollabile('chartOreSettimana', labels);
+  const scrollOre = preparaChartScrollabile('chartOreSettimana', labels);
   creaChart('chartOreSettimana', {
     type: 'bar',
     data: { labels, datasets: [{ label: 'Ore', data: oreUltima, backgroundColor: COLORI_ATLETI }] },
-    options: { responsive: false, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+    options: { responsive: true, maintainAspectRatio: !scrollOre, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
   });
 
   // Stagione: totali
