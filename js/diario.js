@@ -358,6 +358,28 @@ function mostraMsg(testo, tipo) {
 //  AVVISI
 // ============================================================
 
+function _htmlAvvisoCard(a, idLetti, nascosto = false) {
+  const letto    = idLetti.has(a.id);
+  const data     = new Date(a.creato_il).toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit' });
+  const imgParam = a.image_url ? `'${a.image_url}'` : 'null';
+  const azione   = nascosto
+    ? `<button class="btn-nascondi" style="color:var(--cyan);border-color:var(--cyan);" onclick="event.stopPropagation(); ripristinaAvviso(${a.id})">↩️ Ripristina</button>`
+    : `<button class="btn-nascondi" onclick="event.stopPropagation(); nascondiAvviso(${a.id})">✕ Nascondi</button>`;
+  return `
+    <div class="avviso-card ${!nascosto && !letto ? 'non-letto' : ''}" id="avviso-${a.id}" onclick="apriAvviso(${a.id}, this, ${imgParam})">
+      <div class="avviso-header">
+        <span class="avviso-titolo">${a.titolo}</span>
+        <span class="avviso-data">${data}</span>
+      </div>
+      ${a.testo ? `<div class="avviso-testo">${a.testo}</div>` : ''}
+      ${a.image_url ? (isPdf(a.image_url)
+        ? `<div class="avviso-pdf">📄 <a href="${a.image_url}" target="_blank" onclick="event.stopPropagation()">Apri PDF allegato</a></div>`
+        : `<img src="${a.image_url}" class="avviso-img" alt="${a.titolo}" loading="lazy">`) : ''}
+      <div style="text-align:right; margin-top:6px;">${azione}</div>
+    </div>
+  `;
+}
+
 async function caricaAvvisi() {
   const div = document.getElementById('sezioneAvvisi');
   if (!div) return;
@@ -378,40 +400,54 @@ async function caricaAvvisi() {
   const idLetti    = new Set((letture || []).map(l => l.avviso_id));
 
   const visibili = avvisi.filter(a => !idNascosti.has(a.id));
-  if (visibili.length === 0) return;
-
+  const nascosti = avvisi.filter(a =>  idNascosti.has(a.id));
   const nonLetti = visibili.filter(a => !idLetti.has(a.id)).length;
 
-  div.innerHTML = `
-    <div class="scheda" style="margin-bottom:18px;">
-      <div class="scheda-titolo">
-        📢 Avvisi dall'Allenatrice
-        ${nonLetti > 0 ? `<span class="badge-non-letto">${nonLetti}</span>` : ''}
+  let html = '';
+
+  if (visibili.length > 0) {
+    html += `
+      <div class="scheda" style="margin-bottom:18px;">
+        <div class="scheda-titolo">
+          📢 Avvisi dall'Allenatrice
+          ${nonLetti > 0 ? `<span class="badge-non-letto">${nonLetti}</span>` : ''}
+        </div>
+        <div>${visibili.map(a => _htmlAvvisoCard(a, idLetti, false)).join('')}</div>
       </div>
-      <div>
-        ${visibili.map(a => {
-          const letto = idLetti.has(a.id);
-          const data = new Date(a.creato_il).toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit' });
-          const imgParam = a.image_url ? `'${a.image_url}'` : 'null';
-          return `
-            <div class="avviso-card ${letto ? '' : 'non-letto'}" id="avviso-${a.id}" onclick="apriAvviso(${a.id}, this, ${imgParam})">
-              <div class="avviso-header">
-                <span class="avviso-titolo">${a.titolo}</span>
-                <span class="avviso-data">${data}</span>
-              </div>
-              ${a.testo ? `<div class="avviso-testo">${a.testo}</div>` : ''}
-              ${a.image_url ? (isPdf(a.image_url)
-                ? `<div class="avviso-pdf">📄 <a href="${a.image_url}" target="_blank" onclick="event.stopPropagation()">Apri PDF allegato</a></div>`
-                : `<img src="${a.image_url}" class="avviso-img" alt="${a.titolo}" loading="lazy">`) : ''}
-              <div style="text-align:right; margin-top:6px;">
-                <button class="btn-nascondi" onclick="event.stopPropagation(); nascondiAvviso(${a.id})">✕ Nascondi</button>
-              </div>
-            </div>
-          `;
-        }).join('')}
+    `;
+  }
+
+  if (nascosti.length > 0) {
+    html += `
+      <div class="scheda" style="margin-bottom:18px;">
+        <div class="scheda-titolo archivio-toggle" onclick="toggleArchivio()" style="cursor:pointer;user-select:none;">
+          📂 Avvisi nascosti <span style="font-size:11px;opacity:.6;">(${nascosti.length})</span>
+          <span id="archivioFreccia" style="float:right;font-size:12px;opacity:.6;">▼ mostra</span>
+        </div>
+        <div id="archivioCorpo" class="nascosto">
+          ${nascosti.map(a => _htmlAvvisoCard(a, idLetti, true)).join('')}
+        </div>
       </div>
-    </div>
-  `;
+    `;
+  }
+
+  div.innerHTML = html;
+}
+
+function toggleArchivio() {
+  const corpo   = document.getElementById('archivioCorpo');
+  const freccia = document.getElementById('archivioFreccia');
+  const aperto  = !corpo.classList.contains('nascosto');
+  corpo.classList.toggle('nascosto', aperto);
+  freccia.textContent = aperto ? '▼ mostra' : '▲ nascondi';
+}
+
+async function ripristinaAvviso(avvisoId) {
+  await db.from('letture_avvisi').upsert(
+    { avviso_id: avvisoId, atleta_id: utenteCorrente.id, nascosto: false },
+    { onConflict: 'avviso_id,atleta_id' }
+  );
+  await caricaAvvisi();
 }
 
 async function apriAvviso(avvisoId, el, imageUrl) {
