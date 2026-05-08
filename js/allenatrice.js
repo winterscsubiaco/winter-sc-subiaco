@@ -661,7 +661,7 @@ function vediAvviso(id) {
     const isPdf = a.image_url.toLowerCase().split('?')[0].endsWith('.pdf');
     media.innerHTML = isPdf
       ? `<a class="link-pdf" href="${a.image_url}" target="_blank">📄 Apri PDF allegato</a>`
-      : `<img src="${a.image_url}" alt="Allegato">`;
+      : `<img src="${a.image_url}" alt="Allegato" title="Tocca per ingrandire" onclick="apriLightbox('${a.image_url}')">`;
   } else {
     media.innerHTML = '';
   }
@@ -671,6 +671,15 @@ function vediAvviso(id) {
 
 function chiudiAvvisoModale() {
   document.getElementById('overlayAvviso').classList.add('nascosto');
+}
+
+function apriLightbox(src) {
+  document.getElementById('lightboxImg').src = src;
+  document.getElementById('lightbox').classList.remove('nascosto');
+}
+
+function chiudiLightbox() {
+  document.getElementById('lightbox').classList.add('nascosto');
 }
 
 async function eliminaAvviso(id, imageUrl) {
