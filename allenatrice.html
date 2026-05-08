@@ -247,6 +247,21 @@
     </div>
   </div>
 
+  <!-- MODALE VISUALIZZA AVVISO -->
+  <div class="overlay nascosto" id="overlayAvviso">
+    <div class="modale modale-avviso">
+      <div class="modale-intestazione">
+        <h2 id="avvisoModTitolo">Avviso</h2>
+        <button class="btn-chiudi" onclick="chiudiAvvisoModale()">✕</button>
+      </div>
+      <div class="modale-corpo">
+        <div id="avvisoModMeta" style="font-size:11px;color:var(--text-sec);margin-bottom:12px;"></div>
+        <div id="avvisoModTesto" style="color:var(--ice);line-height:1.6;margin-bottom:16px;white-space:pre-wrap;"></div>
+        <div id="avvisoModMedia"></div>
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>

@@ -610,12 +610,15 @@ function popolaCheckboxAtleti() {
   }).join('');
 }
 
+let _avvisiCache = [];
+
 async function caricaAvvisiInviati() {
   const { data: avvisi } = await db
     .from('avvisi')
     .select('*')
     .order('creato_il', { ascending: false });
 
+  _avvisiCache = avvisi || [];
   const div = document.getElementById('avvisiInviati');
   if (!avvisi || avvisi.length === 0) {
     div.innerHTML = '<div class="stato-vuoto">Nessun avviso inviato ancora.</div>';
@@ -626,16 +629,48 @@ async function caricaAvvisiInviati() {
     const data = new Date(a.creato_il).toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: '2-digit' });
     const dest = a.tutti_atleti ? 'Tutti gli atleti' : `${(a.destinatari || []).length} atleti`;
     const imgParam = a.image_url ? `'${a.image_url}'` : 'null';
+    const allegato = a.image_url ? (a.image_url.toLowerCase().split('?')[0].endsWith('.pdf') ? ' · 📄' : ' · 🖼️') : '';
     return `
       <div class="avviso-inviato">
         <div class="avviso-inviato-info">
           <div class="avviso-inviato-titolo">${a.titolo}</div>
-          <div class="avviso-inviato-meta">${data} · ${dest}${a.image_url ? (a.image_url.toLowerCase().split('?')[0].endsWith('.pdf') ? ' · 📄' : ' · 🖼️') : ''}</div>
+          <div class="avviso-inviato-meta">${data} · ${dest}${allegato}</div>
         </div>
-        <button class="btn-elimina" onclick="eliminaAvviso(${a.id}, ${imgParam})">🗑️ Elimina</button>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <button class="btn-elimina" style="background:rgba(0,200,224,.08);border:1px solid var(--cyan-border);color:var(--cyan);" onclick="vediAvviso(${a.id})">👁️</button>
+          <button class="btn-elimina" onclick="eliminaAvviso(${a.id}, ${imgParam})">🗑️</button>
+        </div>
       </div>
     `;
   }).join('');
+}
+
+function vediAvviso(id) {
+  const a = _avvisiCache.find(x => x.id === id);
+  if (!a) return;
+
+  const data = new Date(a.creato_il).toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: '2-digit', hour: '2-digit', minute: '2-digit' });
+  const dest = a.tutti_atleti ? 'Tutti gli atleti' : `${(a.destinatari || []).length} atleti`;
+
+  document.getElementById('avvisoModTitolo').textContent = a.titolo;
+  document.getElementById('avvisoModMeta').textContent = `${data} · ${dest}`;
+  document.getElementById('avvisoModTesto').textContent = a.testo || '';
+
+  const media = document.getElementById('avvisoModMedia');
+  if (a.image_url) {
+    const isPdf = a.image_url.toLowerCase().split('?')[0].endsWith('.pdf');
+    media.innerHTML = isPdf
+      ? `<a class="link-pdf" href="${a.image_url}" target="_blank">📄 Apri PDF allegato</a>`
+      : `<img src="${a.image_url}" alt="Allegato">`;
+  } else {
+    media.innerHTML = '';
+  }
+
+  document.getElementById('overlayAvviso').classList.remove('nascosto');
+}
+
+function chiudiAvvisoModale() {
+  document.getElementById('overlayAvviso').classList.add('nascosto');
 }
 
 async function eliminaAvviso(id, imageUrl) {

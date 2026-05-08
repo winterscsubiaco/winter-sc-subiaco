@@ -1004,6 +1004,15 @@ body::after {
   margin: auto;
   box-shadow: 0 20px 60px rgba(0,0,0,0.8), 0 0 40px rgba(0,200,224,.08);
 }
+.modale-avviso { max-width: 560px; }
+.modale-avviso img { max-width: 100%; border-radius: 4px; margin-top: 8px; }
+.modale-avviso .link-pdf {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 16px; background: rgba(0,200,224,.08);
+  border: 1px solid var(--cyan-border); color: var(--cyan);
+  text-decoration: none; font-size: 13px; margin-top: 8px;
+}
+.modale-avviso .link-pdf:hover { background: rgba(0,200,224,.18); }
 
 .modale-intestazione {
   background: linear-gradient(180deg, #0F2848 0%, var(--deep) 100%);
